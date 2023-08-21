@@ -18,8 +18,14 @@ const config: Config = {
   },
   plugins: [require('@tailwindcss/typography'), require('daisyui')],
   daisyui: {
-    themes: ['dracula'],
-    darkTheme: 'dracula',
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes")["[data-theme=forest]"],
+          "base-100": "rgb(35, 37, 46)",
+        },
+      },
+    ],
   }
 }
 export default config
