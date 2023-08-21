@@ -4,7 +4,7 @@ import type { GetServerSidePropsContext } from "next";
 export default async function initPocketBase(
     context: GetServerSidePropsContext
 ) {
-    const pb = new PocketBase(process.env.POCKETBASE_HOST);
+    const pb = new PocketBase('localhost:8090');
 
     // Load the store data from cookie
     pb.authStore.loadFromCookie(context.req?.headers?.cookie || '');

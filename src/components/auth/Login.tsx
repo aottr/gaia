@@ -3,9 +3,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import PocketBase from 'pocketbase';
 import { IconExclamationCircle } from '@tabler/icons-react';
+import getConfig from 'next/config';
 
 export default () => {
 
+    const { publicRuntimeConfig } = getConfig();
     const [loading, setLoading] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -20,7 +22,7 @@ export default () => {
             setLoading(true);
             setError('');
 
-            const pb = new PocketBase('http://localhost:8090');
+            const pb = new PocketBase(publicRuntimeConfig.pocketbase);
             const user = await pb.collection('users').authWithPassword(username, password);
 
             if (user) {
