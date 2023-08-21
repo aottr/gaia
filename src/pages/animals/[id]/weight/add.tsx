@@ -92,7 +92,7 @@ export default () => {
                                         icons: "",
                                         text: "text-primary hover:bg-primary hover:text-primary-content",
                                         disabledText: "",
-                                        input: "input input-bordered input-lg bg-base-100 text-base-100-content border-gray-600",
+                                        input: "input input-bordered input-lg bg-base-100 rounded-full text-base-100-content border-gray-600",
                                         inputIcon: "",
                                         selected: "bg-primary hover:bg-primary",
                                     },

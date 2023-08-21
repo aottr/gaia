@@ -47,7 +47,7 @@ export default () => {
 
                     {classification && data?.map((item) => (((item.expand.species as any).expand.classification as any).common_name === classification) && (
                         <tr key={item.id}>
-                            <td>{item.name}</td>
+                            <td>{item.name ? item.name : (item.expand.species as any).common_name}</td>
                             <td>
                                 <div className="badge badge-sm badge-primary badge-outline">{(item.expand?.species as any).common_name}</div>
                                 <div className="ml-1 badge badge-sm badge-secondary badge-outline">{((item.expand.species as any).expand.classification as any).common_name}</div>
@@ -59,7 +59,7 @@ export default () => {
 
                     {!classification && data?.map((item) => (
                         <tr key={item.id}>
-                            <td>{item.name}</td>
+                            <td>{item.name ? item.name : (item.expand.species as any).common_name}</td>
                             <td>
                                 <div className="badge badge-sm badge-primary badge-outline">{(item.expand?.species as any).common_name}</div>
                                 <div className="ml-1 badge badge-sm badge-secondary badge-outline">{((item.expand.species as any).expand.classification as any).common_name}</div>
