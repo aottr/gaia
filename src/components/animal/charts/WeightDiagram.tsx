@@ -26,9 +26,8 @@ export default ({ weightData }: { weightData: any }) => {
                 label: 'Weight in grams',
                 data: weightData ? weightData.map((item: any) => item.value) : [],
                 tension: 0.4,
-                //borderColor: 'rgb(191, 149, 249)',
-                borderColor: 'rgb(76, 171, 82)',
-                backgroundColor: 'rgba(76, 171, 82, 0.5)',
+                borderColor: 'rgb(191, 149, 249)',
+                backgroundColor: 'rgba(191, 149, 249, 0.5)',
                 pointStyle: 'rectRounded',
                 pointRadius: 10,
                 pointHoverRadius: 15

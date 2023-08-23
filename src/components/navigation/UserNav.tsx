@@ -1,6 +1,6 @@
 'use client'
-import PocketBase, { BaseAuthStore } from 'pocketbase';
-import { useEffect, useState } from 'react';
+import { BaseAuthStore } from 'pocketbase';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import NavItem from './NavItem';
 
@@ -31,7 +31,9 @@ export default function UserNav({ userData, setUserData }: { userData: BaseAuthS
             )}
 
             {!userData && (
-                <NavItem label='Login' href='/login' />
+                <div className="ml-3 dropdown dropdown-end">
+                    <Link className='btn btn-primary btn-outline' href='/login'>Login</Link>
+                </div>
             )}
 
         </>
