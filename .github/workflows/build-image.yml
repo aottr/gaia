@@ -27,4 +27,4 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/aottr/gaia:latest,gghcr.io/aottr/gaia:0.1.0
+          tags: ghcr.io/aottr/gaia:latest,ghcr.io/aottr/gaia:0.1.0
