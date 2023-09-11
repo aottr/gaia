@@ -68,6 +68,8 @@ const AnimalsIndex = () => {
                             <td className='text-right'><Link href={`/animals/${item.id}`} className='btn btn-secondary btn-xs'>View</Link></td>
                         </tr>
                     ))}
+
+                    {!data?.length && <tr><td colSpan={5} className='text-center'>There are no animals yet.</td></tr>}
                 </tbody>
             </table>
         </>

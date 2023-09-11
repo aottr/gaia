@@ -75,6 +75,7 @@ const DynamicAnimalIndex = () => {
             </div>}
 
             <h1 className='text-3xl'>{animal.name}</h1>
+            <h2 className='text-xs text-secondary'>Code: <a href={`/code/${animal.code}`} target='_blank'>{animal.code}</a></h2>
             <div className='flex flex-col md:flex-row w-full justify-between mt-6'>
                 {(animal && animal.thumbnail) ? (
                     <img
@@ -105,9 +106,13 @@ const DynamicAnimalIndex = () => {
                     </>
                 )
             }
-
-            <h2 className='text-2xl mt-10 mb-5'>Feeding</h2>
-            {(animal && animal.expand['feeding(animal)']) && <FeedingTimes feedingData={animal ? animal.expand['feeding(animal)'] : null} />}
+            {(animal && animal.expand['feeding(animal)']) && (
+                <>
+                    <h2 className='text-2xl mt-10 mb-5'>Feeding</h2>
+                    <FeedingTimes feedingData={animal ? animal.expand['feeding(animal)'] : null} />
+                </>
+            )
+            }
             <h3 className='text-xl mb-5'>Defaults</h3>
 
             {animal.documents && animal.documents.length > 0 && (
