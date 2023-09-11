@@ -11,7 +11,7 @@ const CodeRedirect = () => {
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
-        const pb = new PocketBase(publicRuntimeConfig.pocketbase);
+        const pb = new PocketBase(process.env.POCKETBASE_HOST);
         const getAnimal = async () => {
             try {
                 const animal = await pb.collection('animal').getFirstListItem(`code="${router.query.code}"`);

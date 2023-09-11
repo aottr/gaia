@@ -20,7 +20,7 @@ const DynamicAnimalAddWeight = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const pb = new PocketBase(publicRuntimeConfig.pocketbase);
+        const pb = new PocketBase(process.env.POCKETBASE_HOST);
         const getFeeders = async () => {
             try {
                 const feeders = await pb.collection('feeder_animal').getFullList();
@@ -61,7 +61,7 @@ const DynamicAnimalAddWeight = () => {
 
             setError('');
 
-            const pb = new PocketBase(publicRuntimeConfig.pocketbase);
+            const pb = new PocketBase(process.env.POCKETBASE_HOST);
             const res = await pb.collection('feeding').create({
                 animal: animal?.id,
                 food: !refused ? feeder : null,

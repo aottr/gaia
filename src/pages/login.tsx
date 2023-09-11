@@ -10,7 +10,7 @@ const LoginPage = () => {
     const { publicRuntimeConfig } = getConfig();
 
     useEffect(() => {
-        const pb = new PocketBase(publicRuntimeConfig.pocketbase);
+        const pb = new PocketBase(process.env.POCKETBASE_HOST);
 
         if (pb.authStore.isValid) {
             router.push('/');

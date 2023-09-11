@@ -11,7 +11,7 @@ const DynamicSpecies = () => {
     const [species, setSpecies] = useState<Record | null>(null);
 
     useEffect(() => {
-        const pb = new PocketBase(publicRuntimeConfig.pocketbase);
+        const pb = new PocketBase(process.env.POCKETBASE_HOST);
 
         if (!pb.authStore.isValid) {
             router.push('/login');
