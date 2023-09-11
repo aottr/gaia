@@ -1,7 +1,7 @@
 import { IconScaleOutline, IconExclamationCircle, IconArrowBackUp } from '@tabler/icons-react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Datepicker from "tailwind-datepicker-react"
+import Datepicker from '@/components/Datepicker';
 import PocketBase, { Record } from 'pocketbase';
 import Link from 'next/link';
 import getConfig from 'next/config';
@@ -12,7 +12,6 @@ export default () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     // Date picker
-    const [show, setShow] = useState<boolean>(false);
     const [date, setDate] = useState<Date>(new Date());
 
     const [weight, setWeight] = useState('');
@@ -81,23 +80,7 @@ export default () => {
                             <span className='btn no-animation btn-lg bg-neutral border-neutral text-neutral-content hover:bg-neutral hover:border-neutral cursor-default join-item'>grams</span>
                         </div>
                         <div className='max-w-xs mb-4 w-full'>
-                            <Datepicker options={
-                                {
-                                    clearBtn: false,
-                                    autoHide: true,
-                                    theme: {
-                                        background: "bg-neutral",
-                                        todayBtn: "bg-primary hover:bg-primary text-primary-content",
-                                        clearBtn: "",
-                                        icons: "",
-                                        text: "text-primary hover:bg-primary hover:text-primary-content",
-                                        disabledText: "",
-                                        input: "input input-bordered input-lg bg-base-100 rounded-full text-base-100-content border-gray-600",
-                                        inputIcon: "",
-                                        selected: "bg-primary hover:bg-primary",
-                                    },
-                                }
-                            } show={show} setShow={setShow} onChange={date => setDate(date)} />
+                            <Datepicker onChange={date => setDate(date)} />
                         </div>
                         <button type="submit" className="btn btn-primary btn-lg w-full max-w-xs mb-10" disabled={loading}>
                             {loading ? <span className="loading loading-spinner"></span> : <IconScaleOutline size={24} />}

@@ -24,8 +24,6 @@ const config: Config = {
         light: {
           ...require("daisyui/src/theming/themes")["[data-theme=dracula]"],
           "base-100": "rgb(35, 37, 46)",
-          "--rounded-box": "2rem",
-          "--rounded-btn": "2rem",
         },
       },
     ],

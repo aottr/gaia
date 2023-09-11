@@ -19,7 +19,6 @@ export default () => {
         const fetchSpecies = async () => {
             try {
                 const res = await pb.collection('species').getOne(`${router.query.id}`, { expand: 'rel_humidity,morph(species)' });
-                console.log(res);
                 setSpecies(res);
             } catch (err) {
                 console.log(err);

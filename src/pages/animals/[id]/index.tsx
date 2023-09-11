@@ -6,6 +6,8 @@ import { IconBug, IconScaleOutline, IconExclamationCircle, IconCircleCheck } fro
 import WeightDiagram from '@/components/animal/charts/WeightDiagram';
 import Link from 'next/link';
 import getConfig from 'next/config';
+import FeedingTimes from '@/components/animal/charts/FeedingTimes';
+import Image from 'next/image'
 
 export default () => {
     const router = useRouter();
@@ -23,7 +25,7 @@ export default () => {
         }
         const fetchAnimal = async () => {
             try {
-                const res = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species.classification,weight(animal)' });
+                const res = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species.classification,weight(animal),feeding(animal)' });
                 setAnimal(res);
             } catch (err) {
                 console.log(err);
@@ -73,51 +75,84 @@ export default () => {
             </div>}
 
             <h1 className='text-3xl'>{animal.name}</h1>
-
-            <div className='flex flex-row w-full justify-center mt-6 md:mt-0 md:w-auto md:justify-end'>
-                <div className="join">
-                    <button className="btn join-item btn-primary" onClick={tryAutoFeed}>Auto Feed</button>
-                    <Link className="btn join-item btn-primary btn-outline" href={`/animals/${animal.id}/feed/add`}>
-                        <IconBug size={24} />
-                        Feed
-                    </Link>
-                    <Link className="btn join-item btn-outline btn-secondary" href={`/animals/${animal.id}/weight/add`}>
-                        <IconScaleOutline size={24} />
-                        Weight
-                    </Link>
+            <div className='flex flex-col md:flex-row w-full justify-between mt-6'>
+                {(animal && animal.thumbnail) ? (
+                    <img
+                        className='mt-10 md:w-80 md:mt-0 mx-auto md:mx-0 rounded-xl'
+                        src={`${publicRuntimeConfig.pocketbase}/api/files/animal/${animal.id}/${animal.thumbnail}?thumb=300x300`}
+                        alt="Picture of the author"
+                    />) : <div></div>}
+                <div className='order-first md:order-none flex flex-row w-full justify-center mt-6 md:mt-0 md:w-auto md:justify-end'>
+                    <div className="join">
+                        <button className="btn join-item btn-primary" onClick={tryAutoFeed}>Auto Feed</button>
+                        <Link className="btn join-item btn-primary btn-outline" href={`/animals/${animal.id}/feed/add`}>
+                            <IconBug size={24} />
+                            Feed
+                        </Link>
+                        <Link className="btn join-item btn-outline btn-secondary" href={`/animals/${animal.id}/weight/add`}>
+                            <IconScaleOutline size={24} />
+                            Weight
+                        </Link>
+                    </div>
                 </div>
             </div>
-
             {
                 (animal && animal.expand['weight(animal)']) && (
                     <>
                         <h2 className='text-2xl mt-10 mb-5'>Weight</h2>
                         <WeightDiagram weightData={animal ? animal.expand['weight(animal)'] : null} />
+
                     </>
                 )
             }
 
-            {animal.code && (
-                <SVG
-                    text={`http://localhost:3000/code/${animal.code}`}
-                    options={{
-                        margin: 3,
-                        width: 200,
-                        color: {
-                            dark: '#000000',
-                            light: '#ffffff',
-                        },
-                    }}
-                />
+            <h2 className='text-2xl mt-10 mb-5'>Feeding</h2>
+            {(animal && animal.expand['feeding(animal)']) && <FeedingTimes feedingData={animal ? animal.expand['feeding(animal)'] : null} />}
+            <h3 className='text-xl mb-5'>Defaults</h3>
+
+            {animal.documents && animal.documents.length > 0 && (
+                <>
+                    <h2 className='text-2xl mt-10 mb-5'>Documents</h2>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th className='w-40'></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {animal.documents.map((doc: any, i: number) => (
+                                <tr key={i}>
+                                    <td className='break-all'>{doc}</td>
+                                    <td className='w-40 text-right'>
+                                        <Link href={`${publicRuntimeConfig.pocketbase}/api/files/animal/${animal.id}/${doc}`} target='_blanc' className="btn btn-primary btn-sm">
+                                            View
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </>
             )}
 
-            <dialog id="autoFeedNotConfigured" className="modal modal-bottom sm:modal-middle">
-                <form method="dialog" className="modal-box">
-                    <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                    <h3 className="font-bold text-lg">Auto feed</h3>
-                    <p className="py-4">There is no default feeder configured for this animal!</p>
-                </form>
-            </dialog>
+
+
+            {/*
+                animal.code && (
+                    <SVG
+                        text={`http://localhost:3000/code/${animal.code}`}
+                        options={{
+                            margin: 3,
+                            width: 200,
+                            color: {
+                                dark: '#000000',
+                                light: '#ffffff',
+                            },
+                        }}
+                    />
+                )
+                    */}
         </div >
     ));
 

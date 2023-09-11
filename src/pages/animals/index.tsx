@@ -15,7 +15,7 @@ export default () => {
         const pb = new PocketBase(publicRuntimeConfig.pocketbase);
         return pb.collection("animal").getFullList(100, {
             sort: "name", expand: "species.classification"
-        }).then((res) => { console.log(res); return res; });
+        }).then((res) => { return res; });
     }
 
     const [classification, setClassification] = useState(null);
@@ -77,7 +77,6 @@ export default () => {
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
     const pb = await initPocketBase(context);
-    console.log('pb.authStore.model', pb.authStore.model);
 
     return {
         props: {}

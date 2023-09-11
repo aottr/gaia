@@ -67,7 +67,6 @@ export default () => {
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
     const pb = await initPocketBase(context);
-    console.log('pb.authStore.model', pb.authStore.model);
 
     return {
         props: {}

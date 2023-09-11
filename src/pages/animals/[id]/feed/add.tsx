@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import getConfig from 'next/config';
 import PocketBase, { Record } from 'pocketbase';
 import Link from 'next/link';
+import Datepicker from '@/components/Datepicker';
 
 export default () => {
     const { publicRuntimeConfig } = getConfig();
@@ -14,7 +15,8 @@ export default () => {
     const [animal, setAnimal] = useState<Record | null>(null);
     const [feeder, setFeeder] = useState<string | null>(null);
     const [refused, setRefused] = useState(false);
-    const [amount, setAmount] = useState('1');
+    const [amount, setAmount] = useState<string | null>(null);
+    const [date, setDate] = useState<Date>(new Date());
     const [error, setError] = useState('');
 
     useEffect(() => {
@@ -47,7 +49,7 @@ export default () => {
         try {
             setLoading(true);
 
-            if (amount === '') {
+            if (!amount && !refused) {
                 setError('Please enter an amount.');
                 return;
             }
@@ -64,6 +66,7 @@ export default () => {
                 animal: animal?.id,
                 food: !refused ? feeder : null,
                 amount: !refused ? amount : '0',
+                date,
                 refused
             })
 
@@ -86,12 +89,16 @@ export default () => {
                         <IconExclamationCircle size={24} className="inline" />
                         <span>{error}</span>
                     </div>}
+                    {animal && (<h1 className='text-3xl mb-5 mt-10'> Feeding {animal.name ? animal.name : (animal.expand.species as any).common_name}</h1>)}
+                    <div className='max-w-xs mb-4 w-full'>
+                        <Datepicker onChange={date => setDate(date)} />
+                    </div>
                     <select className="select select-bordered select-lg w-full max-w-xs mb-4" onChange={(e) => setFeeder(e.target.value)} defaultValue={-1}>
                         <option value={-1}>What feeder?</option>
                         {feeders.map((feeder) => <option key={feeder.id} value={feeder.id}>{feeder.name}</option>)}
                     </select>
                     {/*<input type="text" placeholder="Custom feeder" className="input input-bordered input-lg w-full max-w-xs mb-4" autoFocus={true} />*/}
-                    <input type="number" placeholder="Amount" className="input input-bordered input-lg w-full max-w-xs mb-4" value={amount} onChange={(e) => setAmount(e.target.value)} autoFocus={true} />
+                    <input type="number" placeholder="Amount" className="input input-bordered input-lg w-full max-w-xs mb-4" value={amount || ''} onChange={(e) => setAmount(e.target.value)} autoFocus={true} />
 
                     <div className="form-control w-full max-w-xs mb-10">
                         <label className="cursor-pointer label">

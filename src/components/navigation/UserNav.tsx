@@ -23,8 +23,6 @@ export default function UserNav({ userData, setUserData }: { userData: BaseAuthS
                         </div>
                     </label>
                     <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-neutral rounded-box w-52">
-                        <NavItem label='Test' href='/test' />
-                        <NavItem label='Test' href='/test' />
                         <li><a onClick={logout}>Logout</a></li>
                     </ul>
                 </div>

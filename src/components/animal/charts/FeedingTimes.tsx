@@ -2,35 +2,33 @@ import {
     Chart as ChartJS,
     CategoryScale,
     LinearScale,
-    PointElement,
-    LineElement,
+    BarElement,
+    Title,
     Tooltip,
+    Legend
 } from 'chart.js';
 
 ChartJS.register(
     CategoryScale,
     LinearScale,
-    PointElement,
-    LineElement,
-    Tooltip
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
 );
-import { Line } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 
 
-export default ({ weightData }: { weightData: any }) => {
-    weightData = weightData.sort((a: any, b: any) => (new Date(a.date).getTime() - new Date(b.date).getTime()));
+export default ({ feedingData }: { feedingData: any }) => {
+    feedingData = feedingData.sort((a: any, b: any) => (new Date(a.date).getTime() - new Date(b.date).getTime()));
     const chartData = {
-        labels: weightData ? weightData.map((item: any) => new Date(item.date).toLocaleDateString('en-ca')) : [],
+        labels: feedingData ? feedingData.map((item: any) => new Date(item.date).toLocaleDateString('en-ca')) : [],
         datasets: [
             {
-                label: 'Weight in grams',
-                data: weightData ? weightData.map((item: any) => item.value) : [],
-                tension: 0.4,
+                label: 'animals fed',
+                data: feedingData ? feedingData.map((item: any) => item.amount) : [],
                 borderColor: 'rgb(191, 149, 249)',
                 backgroundColor: 'rgba(191, 149, 249, 0.5)',
-                pointStyle: 'rectRounded',
-                pointRadius: 10,
-                pointHoverRadius: 15
             },
         ],
     }
@@ -62,7 +60,7 @@ export default ({ weightData }: { weightData: any }) => {
 
     return (
         <div className='max-h-60'>
-            <Line data={chartData} options={chartOptions} />
+            <Bar data={chartData} options={chartOptions} />
         </div>
     )
 }
