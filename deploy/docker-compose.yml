@@ -1,0 +1,40 @@
+version: '3.9'
+
+x-common-variables: &common-variables
+  PB_DATA_BIND: ${PB_DATA_BIND:-./pb_data}
+  POCKETBASE_HOST: ${POCKETBASE_HOST:-localhost:8080}
+  POCKETBASE_EMAIL: ${POCKETBASE_EMAIL:-admin@example.org}
+  POCKETBASE_PASSWORD: ${POCKETBASE_PASSWORD:-admin}
+
+services:
+  backend:
+    image: ghcr.io/aottr/pocketbase:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7100:8080"
+    volumes:
+      - type: bind
+        source: ${PB_DATA_BIND:-./pb_data}
+        target: /pb/pb_data
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '200k'
+        max-file: '8'
+    environment: *common-variables
+
+  frontend:
+    image: ghcr.io/aottr/gaia:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7200:3000"
+    links:
+      - backend
+    depends_on:
+      - backend
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '200k'
+        max-file: '8'
+    environment: *common-variables
