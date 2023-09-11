@@ -17,7 +17,7 @@ ChartJS.register(
 import { Line } from 'react-chartjs-2';
 
 
-export default ({ weightData }: { weightData: any }) => {
+const WeightDiagram = ({ weightData }: { weightData: any }) => {
     weightData = weightData.sort((a: any, b: any) => (new Date(a.date).getTime() - new Date(b.date).getTime()));
     const chartData = {
         labels: weightData ? weightData.map((item: any) => new Date(item.date).toLocaleDateString('en-ca')) : [],
@@ -66,3 +66,5 @@ export default ({ weightData }: { weightData: any }) => {
         </div>
     )
 }
+
+export default WeightDiagram;

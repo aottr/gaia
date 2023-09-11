@@ -4,7 +4,7 @@ import { IconExclamationCircle } from '@tabler/icons-react';
 import PocketBase from 'pocketbase';
 import getConfig from 'next/config';
 
-export default () => {
+const CodeRedirect = () => {
 
     const router = useRouter();
     const { publicRuntimeConfig } = getConfig();
@@ -33,3 +33,5 @@ export default () => {
         </div>
     )
 }
+
+export default CodeRedirect;

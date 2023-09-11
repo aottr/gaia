@@ -6,7 +6,7 @@ import PocketBase, { Record } from 'pocketbase';
 import Link from 'next/link';
 import Datepicker from '@/components/Datepicker';
 
-export default () => {
+const DynamicAnimalAddWeight = () => {
     const { publicRuntimeConfig } = getConfig();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -118,4 +118,6 @@ export default () => {
             </form>
         </>
     )
-}
+};
+
+export default DynamicAnimalAddWeight;

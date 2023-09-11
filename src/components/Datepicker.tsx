@@ -1,7 +1,7 @@
 import Datepicker from "tailwind-datepicker-react";
 import { useState } from 'react';
 
-export default ({ onChange }: { onChange: ((date: Date) => void) | undefined }) => {
+const DatePickerComponent = ({ onChange }: { onChange: ((date: Date) => void) | undefined }) => {
 
     const [show, setShow] = useState<boolean>(false);
 
@@ -25,3 +25,5 @@ export default ({ onChange }: { onChange: ((date: Date) => void) | undefined }) 
         } show={show} setShow={setShow} onChange={onChange} />
     )
 }
+
+export default DatePickerComponent;

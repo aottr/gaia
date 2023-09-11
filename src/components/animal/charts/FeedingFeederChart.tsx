@@ -9,7 +9,7 @@ ChartJS.register(
 import { Doughnut } from 'react-chartjs-2';
 
 
-export default ({ weightData }: { weightData: any }) => {
+const FeedingFeederChart = ({ weightData }: { weightData: any }) => {
 
     const chartData = {
         labels: weightData ? weightData.map((item: any) => new Date(item.date).toLocaleDateString('en-ca')) : [],
@@ -46,3 +46,5 @@ export default ({ weightData }: { weightData: any }) => {
         </div>
     )
 }
+
+export default FeedingFeederChart;

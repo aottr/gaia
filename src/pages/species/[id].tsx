@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { IconCloudRain, IconCloudSnow, IconTemperaturePlus, IconTemperatureMinus, IconSunHigh, IconMoonStars } from '@tabler/icons-react';
 import getConfig from 'next/config';
 
-export default () => {
+const DynamicSpecies = () => {
 
     const router = useRouter();
     const { publicRuntimeConfig } = getConfig();
@@ -138,5 +138,6 @@ export default () => {
 
         </div >
     ));
+};
 
-}
+export default DynamicSpecies;

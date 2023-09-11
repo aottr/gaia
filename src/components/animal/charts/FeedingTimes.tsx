@@ -19,7 +19,7 @@ ChartJS.register(
 import { Bar } from 'react-chartjs-2';
 
 
-export default ({ feedingData }: { feedingData: any }) => {
+const FeedingTimesDiagram = ({ feedingData }: { feedingData: any }) => {
     feedingData = feedingData.sort((a: any, b: any) => (new Date(a.date).getTime() - new Date(b.date).getTime()));
     const chartData = {
         labels: feedingData ? feedingData.map((item: any) => new Date(item.date).toLocaleDateString('en-ca')) : [],
@@ -64,3 +64,5 @@ export default ({ feedingData }: { feedingData: any }) => {
         </div>
     )
 }
+
+export default FeedingTimesDiagram;

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import PocketBase from 'pocketbase';
 import getConfig from 'next/config';
 
-export default () => {
+const LoginPage = () => {
 
     const router = useRouter();
     const { publicRuntimeConfig } = getConfig();
@@ -19,4 +19,6 @@ export default () => {
     return (
         <Login />
     )
-}
+};
+
+export default LoginPage;

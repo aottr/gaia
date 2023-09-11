@@ -1,4 +1,4 @@
-export default () => (
+const Footer = () => (
     <footer className="footer items-center p-2 text-neutral-content">
         <div className="items-center grid-flow-col">
             <p>&copy; 2023 - Tailbyte</p>
@@ -8,3 +8,5 @@ export default () => (
         </div>
     </footer>
 )
+
+export default Footer;

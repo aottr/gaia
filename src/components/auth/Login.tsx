@@ -5,7 +5,7 @@ import PocketBase from 'pocketbase';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import getConfig from 'next/config';
 
-export default () => {
+const Login = () => {
 
     const { publicRuntimeConfig } = getConfig();
     const [loading, setLoading] = useState(false);
@@ -57,3 +57,5 @@ export default () => {
         </div>
     );
 };
+
+export default Login;

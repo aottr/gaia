@@ -9,7 +9,7 @@ import getConfig from 'next/config';
 import FeedingTimes from '@/components/animal/charts/FeedingTimes';
 import Image from 'next/image'
 
-export default () => {
+const DynamicAnimalIndex = () => {
     const router = useRouter();
     const { SVG } = useQRCode();
     const [animal, setAnimal] = useState<Record | null>(null);
@@ -155,5 +155,6 @@ export default () => {
                     */}
         </div >
     ));
+};
 
-}
+export default DynamicAnimalIndex;

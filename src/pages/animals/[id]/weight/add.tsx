@@ -6,7 +6,7 @@ import PocketBase, { Record } from 'pocketbase';
 import Link from 'next/link';
 import getConfig from 'next/config';
 
-export default () => {
+const DynamicAnimalAddWeight = () => {
 
     const { publicRuntimeConfig } = getConfig();
     const [loading, setLoading] = useState(false);
@@ -95,4 +95,6 @@ export default () => {
             )}
         </>
     )
-}
+};
+
+export default DynamicAnimalAddWeight;

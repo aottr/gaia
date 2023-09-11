@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import { useState } from 'react';
 import getConfig from 'next/config';
 
-export default () => {
+const SpeciesIndex = () => {
 
     const { publicRuntimeConfig } = getConfig();
     const fetcher = () => {
@@ -27,7 +27,7 @@ export default () => {
             <div className='flex flex-row my-4 justify-end'>
                 <div className="join">
                     {data && [...(data.map(item => (item.expand.classification as any).common_name))].filter((value, index, array) => array.indexOf(value) === index).map((classification) => (
-                        <input className="join-item btn btn-sm" type="radio" name="classification" aria-label={classification} onClick={() => setClassification(classification)} />
+                        <input key={classification} className="join-item btn btn-sm" type="radio" name="classification" aria-label={classification} onClick={() => setClassification(classification)} />
                     ))}
                     <input className="join-item btn btn-sm" type="radio" name="classification" aria-label="All" onClick={() => setClassification(null)} checked={!classification} />
                 </div>
@@ -63,6 +63,8 @@ export default () => {
         </>
     )
 }
+
+export default SpeciesIndex;
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
 

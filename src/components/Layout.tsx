@@ -2,7 +2,7 @@ import Footer from './Footer';
 import Navbar from './navigation/Navbar';
 import Head from 'next/head';
 
-export default ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
     return (
         <>
             <Head>
@@ -16,3 +16,5 @@ export default ({ children }: { children: React.ReactNode }) => {
         </>
     )
 }
+
+export default Layout;

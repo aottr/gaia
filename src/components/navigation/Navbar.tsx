@@ -25,7 +25,7 @@ const MENU_ITEMS = [
     }
 ]
 
-export default () => {
+const Navbar = () => {
 
     const [userData, setUserData] = useState<BaseAuthStore | null>(null);
     const { publicRuntimeConfig } = getConfig();
@@ -67,4 +67,6 @@ export default () => {
             </div>
         </div>
     )
-}
+};
+
+export default Navbar;
