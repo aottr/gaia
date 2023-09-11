@@ -19,7 +19,7 @@ const DynamicAnimalAddWeight = () => {
     const router = useRouter();
 
     useEffect(() => {
-        const pb = new PocketBase(process.env.POCKETBASE_HOST);
+        const pb = new PocketBase(publicRuntimeConfig.pocketbase);
         const getAnimal = async () => {
             try {
                 const animal = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species' });
@@ -47,7 +47,7 @@ const DynamicAnimalAddWeight = () => {
 
             setError('');
 
-            const pb = new PocketBase(process.env.POCKETBASE_HOST);
+            const pb = new PocketBase(publicRuntimeConfig.pocketbase);
             const res = await pb.collection('weight').create({
                 animal: animal?.id,
                 value: weight,

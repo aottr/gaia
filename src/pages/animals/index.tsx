@@ -12,7 +12,7 @@ const AnimalsIndex = () => {
     const { publicRuntimeConfig } = getConfig();
 
     const fetcher = () => {
-        const pb = new PocketBase(process.env.POCKETBASE_HOST);
+        const pb = new PocketBase(publicRuntimeConfig.pocketbase);
         return pb.collection("animal").getFullList(100, {
             sort: "name", expand: "species.classification"
         }).then((res) => { return res; });

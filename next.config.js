@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   publicRuntimeConfig: {
-    pocketbase: 'http://localhost:8090',
+    pocketbase: 'https://gaia.tailbyte.org/pb',
   },
   output: 'standalone',
   images: {

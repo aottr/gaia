@@ -22,7 +22,7 @@ const Login = () => {
             setLoading(true);
             setError('');
 
-            const pb = new PocketBase(process.env.POCKETBASE_HOST);
+            const pb = new PocketBase(publicRuntimeConfig.pocketbase);
             const user = await pb.collection('users').authWithPassword(username, password);
 
             if (user) {

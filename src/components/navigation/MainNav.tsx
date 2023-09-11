@@ -10,7 +10,7 @@ export default function MainNav() {
     const [userData, setUserData] = useState<BaseAuthStore | null>(null);
     const router = useRouter();
     useEffect(() => {
-        const pb = new PocketBase(process.env.POCKETBASE_HOST);
+        const pb = new PocketBase(publicRuntimeConfig.pocketbase);
         pb.authStore.model && setUserData(pb.authStore);
     }, []);
 

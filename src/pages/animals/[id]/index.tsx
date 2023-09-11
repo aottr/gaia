@@ -18,7 +18,7 @@ const DynamicAnimalIndex = () => {
     const { publicRuntimeConfig } = getConfig();
 
     useEffect(() => {
-        const pb = new PocketBase(process.env.POCKETBASE_HOST);
+        const pb = new PocketBase(publicRuntimeConfig.pocketbase);
 
         if (!pb.authStore.isValid) {
             router.push('/login');
@@ -46,7 +46,7 @@ const DynamicAnimalIndex = () => {
             return;
         }
         try {
-            const pb = new PocketBase(process.env.POCKETBASE_HOST);
+            const pb = new PocketBase(publicRuntimeConfig.pocketbase);
             const res = await pb.collection('feeding').create({
                 animal: animal?.id,
                 food: animal?.default_food_feeder,
@@ -79,7 +79,7 @@ const DynamicAnimalIndex = () => {
                 {(animal && animal.thumbnail) ? (
                     <img
                         className='mt-10 md:w-80 md:mt-0 mx-auto md:mx-0 rounded-xl'
-                        src={`${process.env.POCKETBASE_HOST}/api/files/animal/${animal.id}/${animal.thumbnail}?thumb=300x300`}
+                        src={`${publicRuntimeConfig.pocketbase}/api/files/animal/${animal.id}/${animal.thumbnail}?thumb=300x300`}
                         alt="Picture of the author"
                     />) : <div></div>}
                 <div className='order-first md:order-none flex flex-row w-full justify-center mt-6 md:mt-0 md:w-auto md:justify-end'>
@@ -125,7 +125,7 @@ const DynamicAnimalIndex = () => {
                                 <tr key={i}>
                                     <td className='break-all'>{doc}</td>
                                     <td className='w-40 text-right'>
-                                        <Link href={`${process.env.POCKETBASE_HOST}/api/files/animal/${animal.id}/${doc}`} target='_blanc' className="btn btn-primary btn-sm">
+                                        <Link href={`${publicRuntimeConfig.pocketbase}/api/files/animal/${animal.id}/${doc}`} target='_blanc' className="btn btn-primary btn-sm">
                                             View
                                         </Link>
                                     </td>
