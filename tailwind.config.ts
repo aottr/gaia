@@ -24,6 +24,8 @@ const config: Config = {
         light: {
           ...require("daisyui/src/theming/themes")["[data-theme=dracula]"],
           "base-100": "rgb(35, 37, 46)",
+          "primary": "#89CE94",
+          "secondary": "#7D5BA6",
         },
       },
     ],

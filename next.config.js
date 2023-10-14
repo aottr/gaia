@@ -1,8 +1,10 @@
 /** @type {import('next').NextConfig} */
+const { version } = require('./package.json');
 const nextConfig = {
   reactStrictMode: true,
   publicRuntimeConfig: {
     pocketbase: 'https://gaia.tailbyte.org/pb',
+    appVersion: version,
   },
   output: 'standalone',
   images: {

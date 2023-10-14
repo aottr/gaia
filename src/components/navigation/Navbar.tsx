@@ -55,11 +55,11 @@ const Navbar = () => {
                         <IconPlant size={24} className="inline" /> gaia</a>
                 </div>
                 <div className="navbar-center hidden lg:flex">
-                    {userData && (<ul className="menu menu-horizontal px-1">
+                    {userData && (<div className="px-1 join">
                         {MENU_ITEMS.map((item) => (
                             <NavItem key={item.href} label={item.label} href={item.href} Icon={item.icon} />
                         ))}
-                    </ul>)}
+                    </div>)}
                 </div>
                 <div className="navbar-end">
                     <UserNav userData={userData} setUserData={setUserData} />
