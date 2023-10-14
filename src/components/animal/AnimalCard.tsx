@@ -24,7 +24,7 @@ const AnimalCard = ({ animal }: { animal: any }) => {
                         <h1 className='font-bold'>{animal.name ? animal.name : (animal.expand.species as any).common_name}</h1>
                         <div className='flex flex-row mt-2'>
                             {animal.expand?.morph && animal.expand?.morph.map((morph: { name: string }) => (
-                                <div className="badge badge-secondary mr-2 mb-2">{morph.name}</div>
+                                <div className="badge badge-secondary mr-2 mb-2" key={morph.name}>{morph.name}</div>
                             ))}
                         </div>
                     </div>
