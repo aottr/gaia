@@ -34,7 +34,7 @@ const AnimalsIndex = () => {
                     {data && [...(data.map(item => ((item.expand.species as any).expand.classification as any).common_name))].filter((value, index, array) => array.indexOf(value) === index).map((classification) => (
                         <input key={classification} className="join-item btn btn-sm" type="radio" name="classification" aria-label={classification} onClick={() => setClassification(classification)} />
                     ))}
-                    <input className="join-item btn btn-sm" type="radio" name="classification" aria-label="All" onClick={() => setClassification(null)} checked={!classification} />
+                    <input className="join-item btn btn-sm" type="radio" name="classification" aria-label="All" onChange={() => setClassification(null)} checked={!classification} />
                 </div>
             </div>
 
