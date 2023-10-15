@@ -23,7 +23,6 @@ const DynamicAnimalAddWeight = () => {
         const getAnimal = async () => {
             try {
                 const animal = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species' });
-                console.log(animal);
                 setAnimal(animal);
             } catch (err) {
                 router.push('/animals');

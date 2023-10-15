@@ -24,7 +24,6 @@ const DynamicAnimalAddWeight = () => {
         const getFeeders = async () => {
             try {
                 const feeders = await pb.collection('feeder_animal').getFullList();
-                console.log(feeders);
                 setFeeders(feeders);
             } catch (err) {
                 console.log(err);
@@ -56,7 +55,6 @@ const DynamicAnimalAddWeight = () => {
             }
 
             if (!feeders.find((f) => f.id !== feeder) && !refused) {
-                console.log(feeder, feeders.find((f) => f.id !== feeder))
                 setError('Please select a feeder.');
                 return;
             }

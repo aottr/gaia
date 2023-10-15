@@ -59,8 +59,6 @@ const DynamicAnimalIndex = () => {
         }
     }, [router.isReady]);
 
-    console.log(animal);
-
     const tryAutoFeed = async () => {
 
         setError('');
@@ -138,7 +136,7 @@ const DynamicAnimalIndex = () => {
                         </h3>
                         {(animal && animal.expand['feeding_notification(animal)']) && (
                             <>
-                                <div>
+                                <div className='mb-6'>
                                     Next feeding
                                     {!animal.expand['feeding(animal)'] || (animal.expand['feeding(animal)'] &&
                                         getLastFeeding(animal) && isPast(addDays(new Date(getLastFeeding(animal)?.date), getFeedingNotification(animal).interval))) ? (
@@ -153,7 +151,7 @@ const DynamicAnimalIndex = () => {
                             {(!animal?.default_food_feeder || !animal?.default_food_amount) && (<div className='ml-2 badge badge-error'>Not configured</div>)}
                         </h3>
                         {(animal?.default_food_feeder && animal?.default_food_amount) && (
-                            <div>
+                            <div className='mb-6'>
                                 Auto Feeding is configured with
                                 <div className='badge badge-primary badge-outline ml-1'>{animal?.default_food_amount}x</div>
                                 <div className='badge badge-primary badge-outline ml-1'>{(animal?.expand.default_food_feeder as unknown as { name: string }).name}</div>
