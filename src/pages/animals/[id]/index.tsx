@@ -140,13 +140,12 @@ const DynamicAnimalIndex = () => {
                             <>
                                 <div>
                                     Next feeding
-                                    {animal.expand['feeding(animal)'] &&
-                                        getLastFeeding(animal) && isPast(addDays(new Date(getLastFeeding(animal)?.date), getFeedingNotification(animal).interval)) ? (
+                                    {!animal.expand['feeding(animal)'] || (animal.expand['feeding(animal)'] &&
+                                        getLastFeeding(animal) && isPast(addDays(new Date(getLastFeeding(animal)?.date), getFeedingNotification(animal).interval))) ? (
                                         <div className='ml-2 badge badge-warning'>Today</div>
                                     ) : (
                                         <> in {differenceInDays(addDays(new Date(new Date(getLastFeeding(animal)?.date).toDateString()), getFeedingNotification(animal).interval), new Date(new Date().toDateString()))} days</>
                                     )}
-                                    {!animal.expand['feeding(animal)'] && 'Today'}
                                 </div>
                             </>
                         )}

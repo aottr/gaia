@@ -9,6 +9,7 @@ import { IconExclamationCircle, IconSettingsAutomation, IconBell } from '@tabler
 
 import DatePickerComponent from '@/components/Datepicker';
 import NumberField from '@/components/inputs/NumberField';
+import MultiSelectField from '@/components/inputs/MultiSelectField';
 
 const AnimalsAddPage = () => {
 
@@ -18,10 +19,10 @@ const AnimalsAddPage = () => {
     const [progressStep, setStep] = useState(1);
     const STEPS = [
         { label: 'Basics', step: 1 },
-        //{ label: 'Morphs', step: 2 },
-        { label: 'Feeding Info', step: 2 },
+        { label: 'Select Morphs', step: 2 },
+        { label: 'Feeding Info', step: 3 },
         //{ label: 'Breeder Info', step: 4 },
-        { label: 'Finish', step: 3 },
+        { label: 'Finish', step: 4 },
     ];
 
     const SEX = [
@@ -35,13 +36,18 @@ const AnimalsAddPage = () => {
     const [sex, setSex] = useState<string>('u');
     const [birthdate, setBirthdate] = useState<Date>(new Date());
 
+    const [morphs, setMorphs] = useState<Array<SelectValue> | undefined>([]);
+
     const [feeder, setFeeder] = useState<SelectValue | undefined>(undefined);
     const [feedingAmount, setFeedingAmount] = useState<number | undefined>(1);
     const [feedingInterval, setFeedingInterval] = useState<number | undefined>(7);
 
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+
     const [speciesList, setSpeciesList] = useState<Array<SelectValue>>([]);
     const [feedersList, setFeedersList] = useState<Array<SelectValue>>([]);
+    const [morphList, setMorphList] = useState<Array<SelectValue>>([]);
     const [readyFinish, setReadyFinish] = useState(false);
 
     const [autoFeedSetup, setAutoFeedSetup] = useState(false);
@@ -57,7 +63,6 @@ const AnimalsAddPage = () => {
         const fetchFeeders = async () => {
             try {
                 const feeders = await pb.collection('feeder_animal').getFullList();
-                console.log(feeders);
                 setFeedersList(feeders.map((item) => ({ value: item.id, label: item.name })));
             } catch (err) {
                 console.log(err);
@@ -67,8 +72,16 @@ const AnimalsAddPage = () => {
         const fetchSpecies = async () => {
             try {
                 const res = await pb.collection('species').getFullList({ expand: 'species.classification' });
-                console.log(res);
                 setSpeciesList(res.map((item) => ({ value: item.id, label: `${item.common_name} (${item.latin_name})` })));
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        const fetchMorphs = async () => {
+            try {
+                const res = await pb.collection('morph').getFullList();
+                setMorphList(res.map((item) => ({ value: item.id, label: item.name })));
             } catch (err) {
                 console.log(err);
             }
@@ -76,6 +89,7 @@ const AnimalsAddPage = () => {
         if (router.isReady) {
             fetchSpecies();
             fetchFeeders();
+            fetchMorphs();
         }
     }, [router.isReady]);
 
@@ -102,6 +116,7 @@ const AnimalsAddPage = () => {
             owner: pb.authStore.model?.id,
             default_food_feeder: autoFeedSetup && feedingAmount && feeder ? feeder.value : null,
             default_food_amount: autoFeedSetup && feedingAmount && feeder ? feedingAmount : null,
+            morph: morphs && morphs.length > 0 ? morphs.map((item) => item.value) : null,
         });
 
         if (feedNotificationSetup && feedingInterval) {
@@ -111,7 +126,9 @@ const AnimalsAddPage = () => {
             });
         }
 
-        setStep([...STEPS].reverse()[0].step)
+        setStep([...STEPS].reverse()[0].step);
+        setSuccess('Animal has been created.');
+        router.push(`/animals/${res.id}`);
     }
 
     return (
@@ -124,7 +141,13 @@ const AnimalsAddPage = () => {
             <h1 className='text-3xl'>Add Animal</h1>
             <ul className="steps steps-vertical lg:steps-horizontal w-full my-10">
                 {STEPS.map(({ step, label }) => (
-                    <li key={step} className={`step cursor-pointer ${progressStep >= step ? 'step-primary' : ''}`} onClick={() => setStep(step)}>{label}</li>
+                    <li key={step} className={`step cursor-pointer ${progressStep >= step ? 'step-primary' : ''}`} onClick={() => {
+
+                        // avoid clicking finish step
+                        if (step === STEPS.length) return;
+                        setStep(step)
+                    }
+                    }>{label}</li>
                 ))}
             </ul>
 
@@ -154,6 +177,12 @@ const AnimalsAddPage = () => {
                     </>
                 )}
                 {progressStep == 2 && (
+                    <>
+                        <h2 className='text-2xl text-center mb-8'>{STEPS[progressStep - 1].label}</h2>
+                        <MultiSelectField label='Morphs' onChange={setMorphs} options={morphList} defaultValue={morphs} />
+                    </>
+                )}
+                {progressStep == 3 && (
                     <>
                         <h2 className='text-2xl text-center mb-8'>{STEPS[progressStep - 1].label}</h2>
 
@@ -194,20 +223,22 @@ const AnimalsAddPage = () => {
                         }
                     </>
                 )}
-                {progressStep == 3 && (
+                {progressStep == 4 && (
                     <>
                         <h2 className='text-2xl'>{STEPS[progressStep - 1].label}</h2>
-
+                        {success}
                     </>
                 )}
 
             </div>
-            <div className='mt-12 flex flex-row w-full lg:max-w-2xl xl:max-w-4xl 2xl:max-w-5xl mx-auto'>
-                <button className={`btn btn-primary ${progressStep === 1 ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep - 1)}>Back</button>
-                <div className='flex-grow'></div>
-                <button className={`ml-2 btn btn-primary ${progressStep === STEPS.length - 1 ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep + 1)}>Next</button>
-                <button className={`ml-2 btn btn-primary ${!readyFinish && 'btn-disabled'}`} onClick={handleAnimalCreation}>Finish</button>
-            </div>
+            {!success && (
+                <div className='mt-12 flex flex-row w-full lg:max-w-2xl xl:max-w-4xl 2xl:max-w-5xl mx-auto'>
+                    <button className={`btn btn-primary ${progressStep === 1 ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep - 1)}>Back</button>
+                    <div className='flex-grow'></div>
+                    <button className={`ml-2 btn btn-primary ${progressStep === STEPS.length - 1 ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep + 1)}>Next</button>
+                    <button className={`ml-2 btn btn-primary ${!readyFinish && 'btn-disabled'}`} onClick={handleAnimalCreation}>Finish</button>
+                </div>
+            )}
         </div>
     );
 };
