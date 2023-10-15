@@ -111,7 +111,7 @@ const AnimalsAddPage = () => {
             });
         }
 
-        setStep(STEPS.toReversed()[0].step)
+        setStep([...STEPS].reverse()[0].step)
     }
 
     return (
@@ -205,7 +205,7 @@ const AnimalsAddPage = () => {
             <div className='mt-12 flex flex-row w-full lg:max-w-2xl xl:max-w-4xl 2xl:max-w-5xl mx-auto'>
                 <button className={`btn btn-primary ${progressStep === 1 ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep - 1)}>Back</button>
                 <div className='flex-grow'></div>
-                <button className="ml-2 btn btn-primary" onClick={() => setStep(progressStep + 1)}>Next</button>
+                <button className={`ml-2 btn btn-primary ${progressStep === STEPS.length - 1 ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep + 1)}>Next</button>
                 <button className={`ml-2 btn btn-primary ${!readyFinish && 'btn-disabled'}`} onClick={handleAnimalCreation}>Finish</button>
             </div>
         </div>
