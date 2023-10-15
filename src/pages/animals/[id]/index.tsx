@@ -2,20 +2,42 @@ import { useState, useEffect } from 'react';
 import PocketBase, { Record } from 'pocketbase';
 import { useRouter } from 'next/router';
 import { useQRCode } from 'next-qrcode';
-import { IconBug, IconScaleOutline, IconExclamationCircle, IconCircleCheck } from '@tabler/icons-react';
+import { IconBug, IconScaleOutline, IconExclamationCircle, IconCircleCheck, IconBell, IconChartHistogram, IconSettingsAutomation } from '@tabler/icons-react';
 import WeightDiagram from '@/components/animal/charts/WeightDiagram';
 import Link from 'next/link';
 import getConfig from 'next/config';
 import FeedingTimes from '@/components/animal/charts/FeedingTimes';
-import Image from 'next/image'
+
+import { isPast, addDays, differenceInDays } from 'date-fns';
 
 const DynamicAnimalIndex = () => {
+
+    const HISTORY_MINIMUM = 3;
+
     const router = useRouter();
     const { SVG } = useQRCode();
     const [animal, setAnimal] = useState<Record | null>(null);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const { publicRuntimeConfig } = getConfig();
+
+    const getFeedingNotification = (animal: Record): { interval: number, time: Date } => {
+
+        const feedingNotification = (animal?.expand['feeding_notification(animal)'] as unknown as Array<{ day_interval: number, notification_time: string }>)[0];
+
+        return {
+            interval: feedingNotification.day_interval,
+            time: new Date()
+        }
+    }
+
+    const getLastFeeding = (animal: Record) => {
+        if (!animal?.expand['feeding(animal)']) {
+            return null;
+        }
+        const lastFeeding = (animal?.expand['feeding(animal)'] as unknown as Array<Record>).slice(-1)[0];
+        return lastFeeding;
+    }
 
     useEffect(() => {
         const pb = new PocketBase(publicRuntimeConfig.pocketbase);
@@ -25,7 +47,7 @@ const DynamicAnimalIndex = () => {
         }
         const fetchAnimal = async () => {
             try {
-                const res = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species.classification,weight(animal),feeding(animal)' });
+                const res = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species.classification,weight(animal),feeding(animal),feeding_notification(animal),default_food_feeder' });
                 setAnimal(res);
             } catch (err) {
                 console.log(err);
@@ -36,6 +58,8 @@ const DynamicAnimalIndex = () => {
             fetchAnimal();
         }
     }, [router.isReady]);
+
+    console.log(animal);
 
     const tryAutoFeed = async () => {
 
@@ -75,7 +99,9 @@ const DynamicAnimalIndex = () => {
             </div>}
 
             <h1 className='text-3xl'>{animal.name}</h1>
-            <h2 className='text-xs text-secondary'>Code: <a href={`/code/${animal.code}`} target='_blank'>{animal.code}</a></h2>
+            <h2 className='text-xs text-secondary'>Code: {animal.code ? <a href={`/code/${animal.code}`} target='_blank'>{animal.code}</a> : (
+                <div className='ml-2 badge badge-error badge-sm'>Not configured</div>
+            )}</h2>
             <div className='flex flex-col md:flex-row w-full justify-between mt-6'>
                 {(animal && animal.thumbnail) ? (
                     <img
@@ -97,23 +123,74 @@ const DynamicAnimalIndex = () => {
                     </div>
                 </div>
             </div>
-            {
-                (animal && animal.expand['weight(animal)']) && (
-                    <>
-                        <h2 className='text-2xl mt-10 mb-5'>Weight</h2>
-                        <WeightDiagram weightData={animal ? animal.expand['weight(animal)'] : null} />
 
-                    </>
-                )
-            }
-            {(animal && animal.expand['feeding(animal)']) && (
-                <>
-                    <h2 className='text-2xl mt-10 mb-5'>Feeding</h2>
-                    <FeedingTimes feedingData={animal ? animal.expand['feeding(animal)'] : null} />
-                </>
-            )
-            }
-            <h3 className='text-xl mb-5'>Defaults</h3>
+            <div className="card card-compact w-full bg-base-200 shadow-xl my-4">
+                <div className="card-body">
+                    <h2 className="card-title text-2xl font-normal">Feeding</h2>
+                    <div>
+                        <h3 className="card-subtitle text-lg mb-2 text-primary">
+                            Feeding notification <IconBell size={20} className='inline' />
+                            {animal.expand['feeding_notification(animal)'] ? (
+                                <div className='ml-2 badge badge-success'>{getFeedingNotification(animal).interval} days</div>
+                            ) : (
+                                <div className='ml-2 badge badge-error'>Not configured</div>
+                            )}
+                        </h3>
+                        {(animal && animal.expand['feeding_notification(animal)']) && (
+                            <>
+                                <div>
+                                    Next feeding
+                                    {animal.expand['feeding(animal)'] &&
+                                        getLastFeeding(animal) && isPast(addDays(new Date(getLastFeeding(animal)?.date), getFeedingNotification(animal).interval)) ? (
+                                        <div className='ml-2 badge badge-warning'>Today</div>
+                                    ) : (
+                                        <> in {differenceInDays(addDays(new Date(new Date(getLastFeeding(animal)?.date).toDateString()), getFeedingNotification(animal).interval), new Date(new Date().toDateString()))} days</>
+                                    )}
+                                    {!animal.expand['feeding(animal)'] && 'Today'}
+                                </div>
+                            </>
+                        )}
+                        <h3 className="card-subtitle text-lg my-2 text-primary">Auto Feeding <IconSettingsAutomation size={20} className='inline' />
+                            {(!animal?.default_food_feeder || !animal?.default_food_amount) && (<div className='ml-2 badge badge-error'>Not configured</div>)}
+                        </h3>
+                        {(animal?.default_food_feeder && animal?.default_food_amount) && (
+                            <div>
+                                Auto Feeding is configured with
+                                <div className='badge badge-primary badge-outline ml-1'>{animal?.default_food_amount}x</div>
+                                <div className='badge badge-primary badge-outline ml-1'>{(animal?.expand.default_food_feeder as unknown as { name: string }).name}</div>
+                            </div>
+                        )}
+                        <h3 className="card-subtitle text-lg my-2 text-primary">Feeding history <IconChartHistogram size={20} className='inline' /></h3>
+                        {(animal && animal.expand['feeding(animal)']) && (animal.expand['feeding(animal)']).length >= HISTORY_MINIMUM && (
+                            <>
+                                <FeedingTimes feedingData={animal ? animal.expand['feeding(animal)'] : null} />
+                            </>
+                        )}
+
+                        {(animal && (!animal.expand['feeding(animal)']) || (animal.expand['feeding(animal)']).length < HISTORY_MINIMUM) && (
+                            <p>History will be generated after a minimum of <div className="badge badge-primary badge-outline">{HISTORY_MINIMUM}</div> feedings.</p>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="card card-compact w-full bg-base-200 shadow-xl my-4">
+                <div className="card-body">
+                    <h2 className="card-title text-2xl font-normal">Weight</h2>
+                    <div>
+                        <h3 className="card-subtitle text-lg my-2 text-primary">Weight history <IconChartHistogram size={20} className='inline' /></h3>
+                        {(animal && animal.expand['weight(animal)']) && (animal.expand['weight(animal)']).length >= HISTORY_MINIMUM && (
+                            <>
+                                <WeightDiagram weightData={animal ? animal.expand['weight(animal)'] : null} />
+                            </>
+                        )}
+
+                        {(animal && (!animal.expand['weight(animal)']) || (animal.expand['weight(animal)']).length < HISTORY_MINIMUM) && (
+                            <p>History will be generated after a minimum of <div className="badge badge-primary badge-outline">{HISTORY_MINIMUM}</div> weightings.</p>
+                        )}
+                    </div>
+                </div>
+            </div>
 
             {animal.documents && animal.documents.length > 0 && (
                 <>

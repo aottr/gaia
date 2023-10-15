@@ -102,13 +102,19 @@ const DynamicAnimalAddWeight = () => {
                     {/*<input type="text" placeholder="Custom feeder" className="input input-bordered input-lg w-full max-w-xs mb-4" autoFocus={true} />*/}
                     <input type="number" placeholder="Amount" className="input input-bordered input-lg w-full max-w-xs mb-4" value={amount || ''} onChange={(e) => setAmount(e.target.value)} autoFocus={true} />
 
-                    <div className="form-control w-full max-w-xs mb-10">
+                    <div className="form-control w-full max-w-xs mb-4">
                         <label className="cursor-pointer label">
                             <span className="label-text text-xl">Refused to eat</span>
                             <input type="checkbox" className="toggle toggle-primary toggle-lg" onChange={(e) => setRefused(e.target.checked)} />
                         </label>
                     </div>
-                    <button type="submit" className="btn btn-primary btn-lg w-full max-w-xs mb-10" disabled={loading}>
+                    <div className="form-control w-full max-w-xs mb-4">
+                        <label className="cursor-pointer label">
+                            <span className="label-text text-xl">Update Auto-Feeding</span>
+                            <input type="checkbox" className="toggle toggle-primary toggle-lg" onChange={(e) => setRefused(e.target.checked)} />
+                        </label>
+                    </div>
+                    <button type="submit" className="btn btn-primary btn-lg w-full max-w-xs mt-6 mb-10" disabled={loading}>
                         {loading ? <span className="loading loading-spinner"></span> : ''}
                         Add
                     </button>

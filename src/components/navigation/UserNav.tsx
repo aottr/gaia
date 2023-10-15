@@ -15,6 +15,8 @@ export default function UserNav({ userData, setUserData }: { userData: BaseAuthS
     }
 
     const avatarUrl = userData?.model?.avatar ? `${publicRuntimeConfig.pocketbase}/api/files/users/${userData?.model?.id}/${userData?.model?.avatar}` : null;
+    console.log(avatarUrl);
+    console.log(userData);
     return (
         <>
             {userData?.isValid && (
