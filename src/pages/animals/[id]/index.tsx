@@ -35,7 +35,7 @@ const DynamicAnimalIndex = () => {
         if (!animal?.expand['feeding(animal)']) {
             return null;
         }
-        const lastFeeding = (animal?.expand['feeding(animal)'] as unknown as Array<Record>).slice(-1)[0];
+        const lastFeeding = [...(animal?.expand['feeding(animal)'] as unknown as Array<Record>)].sort((a: any, b: any) => (new Date(a.date).getTime() - new Date(b.date).getTime())).reverse()[0];
         return lastFeeding;
     }
 
@@ -73,6 +73,7 @@ const DynamicAnimalIndex = () => {
                 animal: animal?.id,
                 food: animal?.default_food_feeder,
                 amount: animal?.default_food_amount == '0' ? 1 : animal?.default_food_amount,
+                date: new Date(),
             })
 
             if (res) {

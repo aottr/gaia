@@ -112,7 +112,7 @@ const AnimalsAddPage = () => {
             name,
             species: species.value,
             sex,
-            birthdate,
+            birthday: birthdate,
             owner: pb.authStore.model?.id,
             default_food_feeder: autoFeedSetup && feedingAmount && feeder ? feeder.value : null,
             default_food_amount: autoFeedSetup && feedingAmount && feeder ? feedingAmount : null,
