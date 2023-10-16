@@ -19,8 +19,8 @@ const MENU_ITEMS = [
         icon: IconFileDescription
     },
     {
-        label: 'Terrariums',
-        href: '/terrariums',
+        label: 'Racks',
+        href: '/racks',
         icon: IconServer
     }
 ]

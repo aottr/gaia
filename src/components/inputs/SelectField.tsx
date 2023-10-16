@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useId } from 'react';
 import Select from 'react-select';
-import classNames from 'classnames';
 
 type SelectProps = {
     options?: SelectValue[];
@@ -12,7 +11,7 @@ export type SelectValue = {
     value: string;
 }
 
-const SelectField: React.FC<SelectProps & { label: string, value?: SelectValue, defaultValue?: SelectValue, onChange: (value: SelectValue | undefined) => void }> = ({ options, label, value, defaultValue, onChange, ...rest }) => {
+const SelectField: React.FC<SelectProps & { label: string, value?: SelectValue, defaultValue?: SelectValue, onChange: (value: SelectValue | undefined) => void, large?: boolean; }> = ({ options, label, value, defaultValue, onChange, large, ...rest }) => {
 
 
     return <div className="form-control w-full p-2">
@@ -20,6 +19,7 @@ const SelectField: React.FC<SelectProps & { label: string, value?: SelectValue, 
             <span className="label-text" aria-label={label}>{label}</span>
         </label>
         <Select
+            instanceId={useId()}
             styles={{
                 control: (baseStyles, state) => ({
                     ...baseStyles,
@@ -27,7 +27,6 @@ const SelectField: React.FC<SelectProps & { label: string, value?: SelectValue, 
                     background: '#23252f',
                     color: '#9aa1ad',
                     borderRadius: '7px',
-                    padding: '5px',
                     '&:hover': {
                         borderColor: '#4e4f56',
                     },
@@ -36,6 +35,7 @@ const SelectField: React.FC<SelectProps & { label: string, value?: SelectValue, 
                 input: (baseStyles) => ({
                     ...baseStyles,
                     color: '#9aa1ad',
+                    padding: large ? '14px' : '5px',
                 }),
                 placeholder: (baseStyles) => ({
                     ...baseStyles,
@@ -44,6 +44,7 @@ const SelectField: React.FC<SelectProps & { label: string, value?: SelectValue, 
                 singleValue: (baseStyles) => ({
                     ...baseStyles,
                     color: '#9aa1ad',
+                    padding: large ? '8px' : baseStyles['padding'],
                 }),
                 dropdownIndicator: (baseStyles) => ({
                     ...baseStyles,
