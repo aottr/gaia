@@ -28,7 +28,7 @@ const AnimalCard = ({ animal }: { animal: any }) => {
                             ))}
                         </div>
                     </div>
-                    <span className='text-right text-sm'>{animal.gender == 'f' ? <IconGenderFemale size={20} className="inline" /> : <IconGenderMale size={20} className="inline" />}</span>
+                    <span className='text-right text-sm'>{animal.sex == 'f' ? <IconGenderFemale size={20} className="inline" /> : <IconGenderMale size={20} className="inline" />}</span>
                 </div>
             </div>
         </Link>);
