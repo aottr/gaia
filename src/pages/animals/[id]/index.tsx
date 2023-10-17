@@ -22,12 +22,21 @@ const DynamicAnimalIndex = () => {
     const { publicRuntimeConfig } = getConfig();
 
     const getFeedingNotification = (animal: Record): { interval: number, time: Date } => {
-
         const feedingNotification = (animal?.expand['feeding_notification(animal)'] as unknown as Array<{ day_interval: number, notification_time: string }>)[0];
-
         return {
             interval: feedingNotification.day_interval,
             time: new Date()
+        }
+    }
+
+    const getRackAssignment = (animal: Record): { id: string, position: number, name: string } | null => {
+        if (!animal?.expand['rack_assignment(animal)'] || !(animal.expand['rack_assignment(animal)'] as Array<Record>)[0].expand.rack) {
+            return null;
+        }
+        return {
+            id: (animal.expand['rack_assignment(animal)'] as unknown as Array<Record>)[0].id,
+            position: (animal.expand['rack_assignment(animal)'] as unknown as Array<Record>)[0].position,
+            name: ((animal.expand['rack_assignment(animal)'] as Array<Record>)[0].expand.rack as Record).name
         }
     }
 
@@ -47,7 +56,8 @@ const DynamicAnimalIndex = () => {
         }
         const fetchAnimal = async () => {
             try {
-                const res = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species.classification,weight(animal),feeding(animal),feeding_notification(animal),default_food_feeder' });
+                const res = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species.classification,weight(animal),feeding(animal),feeding_notification(animal),default_food_feeder,rack_assignment(animal).rack' });
+                console.log(res);
                 setAnimal(res);
             } catch (err) {
                 console.log(err);
@@ -101,6 +111,9 @@ const DynamicAnimalIndex = () => {
             <h2 className='text-xs text-secondary'>Code: {animal.code ? <a href={`/code/${animal.code}`} target='_blank'>{animal.code}</a> : (
                 <div className='ml-2 badge badge-error badge-sm'>Not configured</div>
             )}</h2>
+            {getRackAssignment(animal) && (
+                <h2 className='text-sm text-primary'>Rack: {getRackAssignment(animal)?.name}</h2>
+            )}
             <div className='flex flex-col md:flex-row w-full justify-between mt-6'>
                 {(animal && animal.thumbnail) ? (
                     <img
@@ -166,7 +179,7 @@ const DynamicAnimalIndex = () => {
                         )}
 
                         {(animal && (!animal.expand['feeding(animal)']) || (animal.expand['feeding(animal)']).length < HISTORY_MINIMUM) && (
-                            <p>History will be generated after a minimum of <div className="badge badge-primary badge-outline">{HISTORY_MINIMUM}</div> feedings.</p>
+                            <div>History will be generated after a minimum of <div className="badge badge-primary badge-outline">{HISTORY_MINIMUM}</div> feedings.</div>
                         )}
                     </div>
                 </div>
@@ -184,7 +197,7 @@ const DynamicAnimalIndex = () => {
                         )}
 
                         {(animal && (!animal.expand['weight(animal)']) || (animal.expand['weight(animal)']).length < HISTORY_MINIMUM) && (
-                            <p>History will be generated after a minimum of <div className="badge badge-primary badge-outline">{HISTORY_MINIMUM}</div> weightings.</p>
+                            <div>History will be generated after a minimum of <div className="badge badge-primary badge-outline">{HISTORY_MINIMUM}</div> weightings.</div>
                         )}
                     </div>
                 </div>
