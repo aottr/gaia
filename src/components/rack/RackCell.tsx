@@ -7,9 +7,10 @@ const RackCell = ({ rack, assignment, position }: { rack: Record, assignment: Re
 
     const [checked, setChecked] = useState(false);
     const animal = assignment && assignment.expand && assignment.expand.animal as Record;
+    console.log(animal);
     return (
         <div className='flex flex-row join p-1'>
-            {assignment ? (assignment.animal ? (
+            {assignment ? (assignment.animal && animal ? (
                 <>
                     <div className={`btn ${checked ? 'btn-neutral' : 'btn-primary'} flex-grow join-item ${!checked && 'w-52'}`} onClick={() => setChecked(!checked)}>{checked ? 'Back' : animal?.name || (animal?.expand?.species as Record).latin_name}</div>
                     {checked && (
@@ -19,8 +20,10 @@ const RackCell = ({ rack, assignment, position }: { rack: Record, assignment: Re
                         </>
                     )}
                 </>
-            ) : (
+            ) : assignment.blocked ? (
                 <Link href={`/racks/${rack.id}/edit/${position}`} className="btn btn-error flex-grow">Blocked</Link>
+            ) : (
+                <div className="btn btn-neutral flex-grow">Unknown Animal</div>
             )
             ) : (
                 <Link href={`/racks/${rack.id}/edit/${position}`} className="btn btn-secondary flex-grow">Empty</Link>
