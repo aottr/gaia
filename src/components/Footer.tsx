@@ -4,11 +4,11 @@ const Footer = () => {
 
     const { publicRuntimeConfig } = getConfig();
     return (
-        <footer className="footer items-center p-2 text-neutral-content">
-            <div className="items-center grid-flow-col">
+        <footer className="flex justify-between items-center p-2 text-neutral-content">
+            <div className="justify-self-start">
                 <p>&copy; 2023 &mdash; ShorkBytes</p>
             </div>
-            <div className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+            <div className="justify-self-end">
                 Version {publicRuntimeConfig.appVersion}
             </div>
         </footer>

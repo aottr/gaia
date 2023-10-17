@@ -4,8 +4,8 @@ import UserNav from './UserNav';
 import PocketBase, { BaseAuthStore } from 'pocketbase';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import NavItem from './NavItem';
 import getConfig from 'next/config';
+import Link from 'next/link';
 
 const MENU_ITEMS = [
     {
@@ -29,6 +29,7 @@ const Navbar = () => {
 
     const [userData, setUserData] = useState<BaseAuthStore | null>(null);
     const { publicRuntimeConfig } = getConfig();
+    const router = useRouter();
 
     useEffect(() => {
         const pb = new PocketBase(publicRuntimeConfig.pocketbase);
@@ -44,11 +45,13 @@ const Navbar = () => {
                         <label tabIndex={0} className="btn btn-ghost lg:hidden">
                             <IconMenu size={24} className="inline" />
                         </label>
-                        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                        <div tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                             {MENU_ITEMS.map((item) => (
-                                <NavItem key={`mobile-${item.href}`} label={item.label} href={item.href} Icon={item.icon} />
+                                <Link key={`mobile-item-${item.label}`} href={item.href} className={`btn btn-ghost join-item ${router.pathname === item.href ? 'btn-active' : ''}`}>
+                                    {item.icon && <item.icon size={24} className="inline" />} {item.label}
+                                </Link>
                             ))}
-                        </ul>
+                        </div>
                     </div>)}
 
                     <a className="btn btn-ghost normal-case text-xl">
@@ -57,7 +60,9 @@ const Navbar = () => {
                 <div className="navbar-center hidden lg:flex">
                     {userData && (<div className="px-1 join">
                         {MENU_ITEMS.map((item) => (
-                            <NavItem key={item.href} label={item.label} href={item.href} Icon={item.icon} />
+                            <Link key={item.label} href={item.href} className={`btn btn-ghost join-item ${router.pathname === item.href ? 'btn-active' : ''}`}>
+                                {item.icon && <item.icon size={24} className="inline" />} {item.label}
+                            </Link>
                         ))}
                     </div>)}
                 </div>

@@ -8,6 +8,34 @@ const RacksIndexPage = () => {
 
     const [racks, setRacks] = useState<Array<Record>>([]);
 
+    const VIEW_MODES = [
+        { mode: 'list', label: 'Default' },
+        { mode: 'vertical', label: 'Vertical' },
+        { mode: 'table', label: 'Table' }
+    ];
+
+    const [viewMode, setViewMode] = useState<{ mode: string, label: string }>(VIEW_MODES[0]);
+
+    const calculateEmptySlots = (rack: Record) => {
+        return rack.columns * rack.rows - (
+            rack.expand['rack_assignment(rack)'] ? (
+                rack.expand['rack_assignment(rack)'].length + rack.expand['rack_assignment(rack)'].reduce(
+                    (acc: number, assignment: Record) => acc + (assignment.colspan > 0 ? assignment.colspan - 1 : 0), 0) // add multi-column to reduction
+            ) : 0);
+    }
+
+    const generateEmptySlotBadge = (rack: Record) => {
+        const emptySlots = calculateEmptySlots(rack);
+
+        if (emptySlots <= 0) {
+            return <span className='badge badge-error'>{emptySlots}</span>;
+        } else if (emptySlots < (rack.columns * rack.rows * 0.2)) { // < 20%
+            return <span className='badge badge-warning'>{emptySlots}</span>;
+        } else {
+            return <span className='badge badge-success'>{emptySlots}</span>;
+        }
+    }
+
     useEffect(() => {
         const pb = new PocketBase(getConfig().publicRuntimeConfig.pocketbase);
 
@@ -20,35 +48,84 @@ const RacksIndexPage = () => {
 
     return (
         <div>
-            <div className='flex flex-wrap items-start'>
-                {racks && racks.map((item) => (
-                    <div className='m-2 bg-base-200 rounded-xl p-3' key={item.id}>
-                        <table>
-                            <thead>
-                                <tr><th colSpan={item.columns} className='pb-2'>{item.name}</th></tr>
-                            </thead>
-                            <tbody>
-                                {Array(item.rows).fill(0).map((_, i) => {
-                                    let skipCol = 0;
-                                    return (<tr key={`row-${i}`}>
-                                        {Array(item.columns).fill(0).map((_, j) => {
-                                            if (--skipCol >= 0) return null;
-
-                                            const assignment = item.expand['rack_assignment(rack)'] && (item.expand['rack_assignment(rack)'] as unknown as Array<Record>).find((assignment) => assignment.position == i * item.columns + j);
-                                            if (assignment && assignment.colspan > 0) skipCol = assignment.colspan - 1;
-                                            return (
-                                                <td colSpan={assignment && assignment.colspan > 0 ? assignment.colspan : 1} className='w-56' key={`cell-${i * item.columns + j}`}>
-                                                    <RackCell rack={item} assignment={assignment} position={i * item.columns + j} />
-                                                </td>
-                                            );
-                                        })}
-                                    </tr>)
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                ))}
+            <div className='flex justify-end'>
+                <div className='join'>
+                    {VIEW_MODES.map((item) => (
+                        <input key={item.mode} className="join-item btn btn-sm" checked={viewMode.mode === item.mode} type="radio" name="viewMode" aria-label={item.label} onClick={() => setViewMode(item)} />
+                    ))}
+                </div>
             </div>
+            {viewMode.mode == 'table' ? (
+                <div>
+                    <table className="table">
+                        {/* head */}
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th className='w-24'>Empty slots</th>
+                                <th className='w-24'>Temperature</th>
+                                <th className='w-64 text-right'>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {racks && racks.map((rack) => (
+                                <tr key={rack.id}>
+                                    <td>{rack.name}</td>
+                                    <td className='text-center'>
+                                        {generateEmptySlotBadge(rack)}
+                                    </td>
+                                    <td className='text-right'>30°C</td>
+                                    <td className='text-right'>
+                                        <span className="btn btn-sm btn-primary mr-2">View <IconEye size={16} /></span>
+                                        <span className="btn btn-sm btn-secondary">Edit <IconPencil size={16} /></span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            ) : (
+                <div className={`flex ${viewMode.mode == 'vertical' ? 'flex-col' : 'flex-wrap'} items-start`}>
+                    {racks && racks.map((item) => (
+                        <div className='m-2 bg-base-200 rounded-xl p-1' key={item.id}>
+                            <table>
+                                <thead>
+                                    <tr><th colSpan={item.columns} className='pb-1'>{item.name}</th></tr>
+                                </thead>
+                                <tbody>
+                                    {Array(item.rows).fill(0).map((_, i) => {
+                                        let skipCol = 0;
+                                        return (<tr key={`row-${i}`}>
+                                            {Array(item.columns).fill(0).map((_, j) => {
+                                                if (--skipCol >= 0) return null;
+
+                                                const assignment = item.expand['rack_assignment(rack)'] && (item.expand['rack_assignment(rack)'] as unknown as Array<Record>).find((assignment) => assignment.position == i * item.columns + j);
+                                                if (assignment && assignment.colspan > 0) skipCol = assignment.colspan - 1;
+                                                return (
+                                                    <td colSpan={assignment && assignment.colspan > 0 ? assignment.colspan : 1} className='w-56' key={`cell-${i * item.columns + j}`}>
+                                                        <RackCell rack={item} assignment={assignment} position={i * item.columns + j} />
+                                                    </td>
+                                                );
+                                            })}
+                                        </tr>)
+                                    })}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colSpan={item.columns} className='text-end pt-1 pr-1'>
+                                            <div className="tooltip tooltip-bottom" data-tip="Show rack">
+                                                <span className="btn btn-xs btn-primary btn-square mr-1"><IconEye size={16} /></span>
+                                            </div>
+                                            <span className="btn btn-xs btn-secondary btn-square"><IconPencil size={16} /></span>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    ))}
+                </div>
+            )}
+
         </div>
     );
 }

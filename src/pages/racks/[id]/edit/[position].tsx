@@ -5,6 +5,7 @@ import PocketBase, { Record } from 'pocketbase';
 import SelectField, { SelectValue } from '@/components/inputs/SelectField';
 import Link from 'next/link';
 import { IconArrowBackUp, IconExclamationCircle } from '@tabler/icons-react';
+import ShowcaseRack from '@/components/rack/ShowcaseRack';
 
 const DynamicRackEditPage = () => {
 
@@ -143,23 +144,9 @@ const DynamicRackEditPage = () => {
                 <h1 className='text-2xl text-center mb-8'>{assignment ? 'Edit' : 'Create'} Rack Assignment</h1>
 
                 <div className='w-full px-2 mb-4'>
-                    {rack && router.query.position && (<div className='w-full bg-base-200 rounded-xl p-2'>
-                        <table className='w-full'>
-                            <thead>
-                                <tr><th colSpan={rack.columns} className='pb-2'>{rack.name}</th></tr>
-                            </thead>
-                            <tbody>
-                                {Array(rack.rows).fill(0).map((_, i) => (
-                                    <tr key={`row-${i}`}>
-                                        {Array(rack.columns).fill(0).map((_, j) => (
-                                            <td key={`cell-${i * rack.columns + j}`}>
-                                                <div className={`${i * rack.columns + j === Number(router.query.position) ? (assignment && assignment.blocked ? 'bg-error' : 'bg-primary') : 'bg-base-100'} rounded m-1`}>&nbsp;</div>
-                                            </td>
-                                        ))}
-                                    </tr>))}
-                            </tbody>
-                        </table>
-                    </div>)}
+                    {rack && router.query.position && (
+                        <ShowcaseRack cols={rack.columns} rows={rack.rows} title={rack.name} highlightedPosition={Number(router.query.position)} positionIsBlocked={assignment && assignment.blocked} />
+                    )}
                 </div>
 
                 <div className="form-control w-full p-2">
