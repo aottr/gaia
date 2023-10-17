@@ -6,6 +6,7 @@ import getConfig from 'next/config';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { IconArrowBackUp, IconAlertTriangle } from '@tabler/icons-react';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const DynamicRackEditPage = () => {
 
@@ -71,6 +72,9 @@ const DynamicRackEditPage = () => {
 
     return (
         <>
+            {rack && <Breadcrumbs dynamicEntityName={
+                { [rack.id]: rack.name }
+            } />}
             {rack && (rack.columns !== cols || rack.rows !== rows) && (
                 <div className="alert alert-warning max-w-3xl mx-auto">
                     <IconAlertTriangle size={24} />

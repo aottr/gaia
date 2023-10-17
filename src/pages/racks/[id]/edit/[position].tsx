@@ -6,6 +6,7 @@ import SelectField, { SelectValue } from '@/components/inputs/SelectField';
 import Link from 'next/link';
 import { IconArrowBackUp, IconExclamationCircle } from '@tabler/icons-react';
 import ShowcaseRack from '@/components/rack/ShowcaseRack';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const DynamicRackEditPage = () => {
 
@@ -71,6 +72,12 @@ const DynamicRackEditPage = () => {
         setAnimal(animalList.find((a) => a.value === assignment.animal));
     }
 
+    // check position bounds
+    if (rack && router.query.position && (
+        Number(router.query.position) > rack.rows * rack.columns - 1) || Number(router.query.position) < 0) {
+        router.push(`/racks/${router.query.id}`);
+    }
+
     const maxColSpan = rack && router.query.position ? rack.columns - (Number(router.query.position) % rack.columns) : 1;
 
     const handleSave = async (e: React.FormEvent) => {
@@ -126,7 +133,7 @@ const DynamicRackEditPage = () => {
                     blocked: blockAssignment,
                 });
             }
-            await router.push(`/racks`);
+            await router.push(`/racks/${router.query.id}`);
         } catch (err) {
             console.log(err);
         } finally {
@@ -136,6 +143,13 @@ const DynamicRackEditPage = () => {
 
     return (
         <>
+            {rack && router.query.position && <Breadcrumbs dynamicEntityName={
+                {
+                    [rack.id]: rack.name,
+                    [Number(router.query.position)]: `Position ${Number(router.query.position)}`
+                }
+            } />}
+
             {error && <div className="alert alert-error mt-3 mb-8 mx-4">
                 <IconExclamationCircle size={24} className="inline" />
                 <span>{error}</span>
@@ -207,7 +221,7 @@ const DynamicRackEditPage = () => {
                         {loading ? <span className="loading loading-spinner"></span> : ''}
                         {clearAssignment ? 'Clear' : 'Save'}
                     </button>
-                    <Link className="btn btn-primary btn-outline btn-lg w-full max-w-sm" href={`/racks`}>
+                    <Link className="btn btn-primary btn-outline btn-lg w-full max-w-sm" href={`/racks/${router.query.id}`}>
                         <IconArrowBackUp size={24} />
                         Go Back
                     </Link>

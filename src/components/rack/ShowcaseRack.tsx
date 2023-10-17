@@ -1,5 +1,5 @@
 
-const InteractiveRack = ({ cols, rows, title, highlightedPosition, positionIsBlocked }: { cols: number, rows: number, title?: string, highlightedPosition?: number, positionIsBlocked?: boolean }) => {
+const ShowcaseRack = ({ cols, rows, title, highlightedPosition, positionIsBlocked }: { cols: number, rows: number, title?: string, highlightedPosition?: number, positionIsBlocked?: boolean }) => {
 
     return (
         <div className='w-full bg-base-200 rounded-xl p-2'>
@@ -22,4 +22,4 @@ const InteractiveRack = ({ cols, rows, title, highlightedPosition, positionIsBlo
     );
 }
 
-export default InteractiveRack;
+export default ShowcaseRack;
