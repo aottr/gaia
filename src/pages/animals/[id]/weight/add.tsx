@@ -5,6 +5,7 @@ import Datepicker from '@/components/Datepicker';
 import PocketBase, { Record } from 'pocketbase';
 import Link from 'next/link';
 import getConfig from 'next/config';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const DynamicAnimalAddWeight = () => {
 
@@ -66,6 +67,7 @@ const DynamicAnimalAddWeight = () => {
 
     return (
         <>
+            {animal && <Breadcrumbs dynamicEntityName={{ [animal.id]: animal.name || animal.code || 'Animal', 'add': 'Add Weighing' }} />}
             {animal && (
                 <form onSubmit={handleLogin}>
                     <div className='flex flex-col justify-center items-center'>

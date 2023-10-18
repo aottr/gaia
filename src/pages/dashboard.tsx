@@ -59,28 +59,7 @@ const DashboardPage = () => {
                 <div className="lg:col-span-2">
                     <h1 className='text-2xl text-center my-8'>Dashboard</h1>
                 </div>
-                <div className='bg-base-200 rounded-xl'>
-                    <h1 className='text-xl py-2 px-4 border-b-4 border-primary'><IconToolsKitchen2 size={26} className="inline" /> <span className='font-bold'>Today's</span> Feedings</h1>
-                    {animals && animals.map((animal: Record) => {
-                        if (!animal.expand['feeding_notification(animal)']) return null;
-                        if (!(getLastFeeding(animal) && isPast(addDays(new Date(getLastFeeding(animal)?.date), getFeedingNotification(animal).interval)))) return null;
-                        todaysFeedings.push(animal);
-                        return (
-                            <div className='border-b border-base-100 last:border-b-0 flex items-center'>
-                                <div className='py-2 px-4'>{animal.name || animal.code || 'EEE'}</div>
-                                <div className='flex-grow'></div>
-                                <div className='items-end px-2'><span className='btn btn-xs btn-primary'>Test</span></div>
-                            </div>
-                        )
-                    })}
-                    {todaysFeedings.length === 0 && (
-                        <div className='text-center p-4'>
-                            There are now Feedings today.
-                        </div>
-                    )}
-                </div>
                 <TodaysFeedingsComponent />
-                <button className='btn btn-primary btn-sm'>Add Alert</button>
             </div>
         </>
     )

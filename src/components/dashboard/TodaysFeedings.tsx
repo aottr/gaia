@@ -44,7 +44,7 @@ const TodaysFeedingsComponent = () => {
     const { data, error, isLoading } = useSWR('feeding_notification', fetcher);
     return (
         <div className='bg-base-200 rounded-xl'>
-            <h1 className='text-xl py-2 px-4 border-b-4 border-primary'><IconToolsKitchen2 size={26} className="inline" /> <span className='font-bold'>Today's</span> Feedings</h1>
+            <h1 className='text-xl py-2 px-4 border-b-4 border-primary'><IconToolsKitchen2 size={26} className="inline" /> <span className='font-bold'>Today&apos;s</span> Feedings</h1>
             {isLoading && <div className='text-center py-10'><span className="loading loading-ring text-primary loading-lg"></span></div>}
             {data && data.map((notification) => (
                 <div key={notification.id} className='border-b border-base-100 last:border-b-0 flex items-center'>

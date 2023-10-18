@@ -6,6 +6,7 @@ import getConfig from 'next/config'
 import AnimalCard from '@/components/animal/AnimalCard';
 import Link from 'next/link';
 import { IconPlus } from '@tabler/icons-react';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const AnimalsIndex = () => {
 
@@ -25,7 +26,8 @@ const AnimalsIndex = () => {
 
     return (
         <>
-            <div className='flex flex-row m-2'>
+            <Breadcrumbs />
+            <div className='flex flex-row my-3'>
                 <div className="join">
                     <Link href="/animals/add" className="btn btn-primary btn-sm">Add Animal <IconPlus size={16} /></Link>
                 </div>
@@ -38,11 +40,7 @@ const AnimalsIndex = () => {
                 </div>
             </div>
 
-            <div className='grid grid-cols-4 gap-4'>
-
-            </div>
-
-            <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 -mx-2'>
                 {!classification && data?.map((item) => (
                     <AnimalCard key={item.id} animal={item} />
                 ))}

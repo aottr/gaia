@@ -6,6 +6,7 @@ import PocketBase, { Record } from 'pocketbase';
 import Link from 'next/link';
 import Datepicker from '@/components/Datepicker';
 import { updateFeedingNotification } from '@/helpers/feeding';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const DynamicAnimalAddWeight = () => {
     const { publicRuntimeConfig } = getConfig();
@@ -86,6 +87,7 @@ const DynamicAnimalAddWeight = () => {
 
     return (
         <>
+            {animal && <Breadcrumbs dynamicEntityName={{ [animal.id]: animal.name || animal.code || 'Animal', 'add': 'Add Feeding' }} />}
             <form onSubmit={handleFeeding}>
                 <div className='flex flex-col justify-center items-center'>
                     {error && <div className="alert alert-error mb-8 max-w-xs">
@@ -94,7 +96,7 @@ const DynamicAnimalAddWeight = () => {
                     </div>}
                     {animal && (<h1 className='text-3xl mb-5 mt-10'> Feeding {animal.name ? animal.name : (animal.expand.species as any).common_name}</h1>)}
                     <div className='max-w-xs mb-4 w-full'>
-                        <Datepicker onChange={date => setDate(date)} />
+                        <Datepicker onChange={date => setDate(date)} large={true} />
                     </div>
                     <select className="select select-bordered select-lg w-full max-w-xs mb-4" onChange={(e) => setFeeder(e.target.value)} defaultValue={-1}>
                         <option value={-1}>What feeder?</option>
