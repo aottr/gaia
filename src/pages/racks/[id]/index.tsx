@@ -16,7 +16,7 @@ const DynamicRackPage = () => {
         const pb = new PocketBase(getConfig().publicRuntimeConfig.pocketbase);
         const getRack = async () => {
             try {
-                const res = await pb.collection('rack').getOne(`${router.query.id}`);
+                const res = await pb.collection('rack').getOne(`${router.query.id}`, { expand: 'rack_assignment(rack).animal.species' });
                 setRack(res);
             } catch (err) {
                 console.log(err);

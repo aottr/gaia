@@ -9,12 +9,16 @@ import Link from 'next/link';
 
 const MENU_ITEMS = [
     {
+        label: 'Dashboard',
+        href: '/dashboard'
+    },
+    {
         label: 'My Animals',
         href: '/animals',
         icon: IconPaw
     },
     {
-        label: 'Species',
+        label: 'Library',
         href: '/species',
         icon: IconFileDescription
     },

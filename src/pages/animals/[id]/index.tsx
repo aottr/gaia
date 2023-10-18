@@ -7,6 +7,7 @@ import WeightDiagram from '@/components/animal/charts/WeightDiagram';
 import Link from 'next/link';
 import getConfig from 'next/config';
 import FeedingTimes from '@/components/animal/charts/FeedingTimes';
+import { autoFeeding } from '@/helpers/feeding';
 
 import { isPast, addDays, differenceInDays } from 'date-fns';
 
@@ -71,28 +72,14 @@ const DynamicAnimalIndex = () => {
 
     const tryAutoFeed = async () => {
 
+        if (!animal) return;
         setError('');
-
-        if (!animal?.default_food_feeder) {
+        if (!animal.default_food_feeder) {
             setError('There is no default feeder configured!');
             return;
         }
-        try {
-            const pb = new PocketBase(publicRuntimeConfig.pocketbase);
-            const res = await pb.collection('feeding').create({
-                animal: animal?.id,
-                food: animal?.default_food_feeder,
-                amount: animal?.default_food_amount == '0' ? 1 : animal?.default_food_amount,
-                date: new Date(),
-            })
 
-            if (res) {
-                setSuccess(`Auto feeding successful!`);
-            }
-
-        } catch (err) {
-            console.log(err);
-        }
+        if (await autoFeeding(animal)) setSuccess(`Auto feeding successful!`);
     };
 
     return (animal && (

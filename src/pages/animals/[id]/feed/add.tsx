@@ -5,6 +5,7 @@ import getConfig from 'next/config';
 import PocketBase, { Record } from 'pocketbase';
 import Link from 'next/link';
 import Datepicker from '@/components/Datepicker';
+import { updateFeedingNotification } from '@/helpers/feeding';
 
 const DynamicAnimalAddWeight = () => {
     const { publicRuntimeConfig } = getConfig();
@@ -44,6 +45,7 @@ const DynamicAnimalAddWeight = () => {
     }, [router.isReady]);
 
     const handleFeeding = async (e: any) => {
+        if (!animal) return;
         e.preventDefault();
 
         try {
@@ -68,9 +70,10 @@ const DynamicAnimalAddWeight = () => {
                 amount: !refused ? amount : '0',
                 date,
                 refused
-            })
+            });
 
             if (res) {
+                updateFeedingNotification(animal, res);
                 router.push(`/animals/${animal?.id}`);
             }
 
