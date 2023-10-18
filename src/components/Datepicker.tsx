@@ -6,7 +6,7 @@ const DatePickerComponent = ({ onChange, large }: { onChange: ((date: Date) => v
     const [show, setShow] = useState<boolean>(false);
 
     return (
-        <Datepicker options={
+        <Datepicker classNames='relative' options={
             {
                 clearBtn: false,
                 autoHide: true,

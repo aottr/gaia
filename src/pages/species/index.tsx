@@ -5,6 +5,7 @@ import PocketBase from 'pocketbase';
 import useSWR from 'swr';
 import { useState } from 'react';
 import getConfig from 'next/config';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const SpeciesIndex = () => {
 
@@ -24,7 +25,8 @@ const SpeciesIndex = () => {
 
     return (
         <>
-            <div className='flex flex-row my-4 justify-end'>
+            <Breadcrumbs />
+            <div className='flex flex-row my-3 justify-end'>
                 <div className="join">
                     {data && [...(data.map(item => (item.expand.classification as any).common_name))].filter((value, index, array) => array.indexOf(value) === index).map((classification) => (
                         <input key={classification} className="join-item btn btn-sm" type="radio" name="classification" aria-label={classification} onClick={() => setClassification(classification)} />

@@ -5,6 +5,7 @@ import { IconPencil, IconTrash, IconEye } from '@tabler/icons-react';
 import RackCell from '@/components/rack/RackCell';
 import Link from 'next/link';
 import InteractiveRack from '@/components/rack/InteractiveRack';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 const RacksIndexPage = () => {
 
@@ -50,7 +51,8 @@ const RacksIndexPage = () => {
 
     return (
         <div>
-            <div className='flex justify-end'>
+            <Breadcrumbs />
+            <div className='my-3 flex justify-end'>
                 <div className='join'>
                     {VIEW_MODES.map((item) => (
                         <input key={item.mode} className="join-item btn btn-sm" checked={viewMode.mode === item.mode} type="radio" name="viewMode" aria-label={item.label} onClick={() => setViewMode(item)} />
