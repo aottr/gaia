@@ -97,7 +97,10 @@ const DynamicAnimalIndex = () => {
                     <span>{success}</span>
                 </div>}
 
-                <h1 className='text-3xl'>{animal.name}</h1>
+                <h1 className='text-3xl'>
+                    {animal.name}
+                    <span className='btn btn-xs' onClick={() => router.push(`/animals/${animal.id}/edit`)}>Edit</span>
+                </h1>
                 <h2 className='text-xs text-secondary'>Code: {animal.code ? <a href={`/code/${animal.code}`} target='_blank'>{animal.code}</a> : (
                     <div className='ml-2 badge badge-error badge-sm'>Not configured</div>
                 )}</h2>

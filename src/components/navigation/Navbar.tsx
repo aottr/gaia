@@ -1,5 +1,5 @@
 'use client'
-import { IconMenu, IconPlant, IconPaw, IconFileDescription, IconServer } from '@tabler/icons-react';
+import { IconMenu, IconPlant, IconPaw, IconFileDescription, IconServer, IconDashboard } from '@tabler/icons-react';
 import UserNav from './UserNav';
 import PocketBase, { BaseAuthStore } from 'pocketbase';
 import { useEffect, useState } from 'react';
@@ -10,7 +10,8 @@ import Link from 'next/link';
 const MENU_ITEMS = [
     {
         label: 'Dashboard',
-        href: '/dashboard'
+        href: '/dashboard',
+        icon: IconDashboard
     },
     {
         label: 'My Animals',
