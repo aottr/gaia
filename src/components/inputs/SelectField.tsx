@@ -35,7 +35,7 @@ const SelectField: React.FC<SelectProps & { label: string, value?: SelectValue, 
                 input: (baseStyles) => ({
                     ...baseStyles,
                     color: '#9aa1ad',
-                    padding: large ? '14px' : '5px',
+                    padding: large ? '14px' : '10px',
                 }),
                 placeholder: (baseStyles) => ({
                     ...baseStyles,

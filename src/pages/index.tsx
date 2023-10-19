@@ -16,14 +16,12 @@ export default function Home({ authData }: any) {
     if (!pb.authStore.isValid) {
       router.push('/login'); // Redirect to the login page
     }
+    router.push('/dashboard'); // Redirect to the dashboard page
   }, []);
 
   return (
     <>
-      <span>Test</span>
-      <div className="radial-progress" style={{ "--value": 70 } as React.CSSProperties}>
-        <IconCloudRain size={24} className="inline" /> 70%
-      </div>
+
     </>
   )
 }

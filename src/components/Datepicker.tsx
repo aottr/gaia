@@ -1,7 +1,7 @@
 import Datepicker from "tailwind-datepicker-react";
 import { useState } from 'react';
 
-const DatePickerComponent = ({ onChange, large }: { onChange: ((date: Date) => void) | undefined, large?: boolean }) => {
+const DatePickerComponent = ({ onChange, large, defaultValue }: { onChange: ((date: Date) => void) | undefined, large?: boolean, defaultValue?: Date }) => {
 
     const [show, setShow] = useState<boolean>(false);
 
@@ -10,6 +10,7 @@ const DatePickerComponent = ({ onChange, large }: { onChange: ((date: Date) => v
             {
                 clearBtn: false,
                 autoHide: true,
+                defaultDate: defaultValue || new Date(),
                 theme: {
                     background: "bg-neutral",
                     todayBtn: "bg-primary hover:bg-primary text-primary-content",
