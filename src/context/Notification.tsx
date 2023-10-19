@@ -41,9 +41,9 @@ const NotificationContainer = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <NotificationContext.Provider value={{ notifications: notifications, addNotification: addNotification }}>
-            <div className="toast toast-end">
+            <div className="toast toast-end z-50">
                 {notifications.map((alert) => (
-                    <div key={alert.id} className={`alert alert-${alert.type} z-50`}>
+                    <div key={alert.id} className={`alert alert-${alert.type}`}>
                         <span>{alert.message}</span>
                     </div>
                 ))}

@@ -133,12 +133,35 @@ const DynamicAnimalEditPage = () => {
         }
     }
 
+    if (!breeder && animal && breederList.length > 0 && animal.breeder) {
+        const breederItem = breederList.find((item) => item.value === animal.breeder);
+        if (breederItem) {
+            setBreeder(breederItem);
+        }
+    }
+
     const handleBaseInformationUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!code || !species || !name) {
+        if ((!code && !name) || !species) {
             addNotification('Please fill out all required fields.', 'error');
             return;
+        }
+        try {
+            const pb = new PocketBase(getConfig().publicRuntimeConfig.pocketbase);
+            pb.collection('animal').update(router.query.id as string, {
+                name,
+                code,
+                sex,
+                captive_bred: captiveBred,
+                birthday: birthdate,
+                species: species.value,
+                morph: morphs?.map((item) => item.value),
+                breeder: breeder ? breeder.value : null,
+            });
+            addNotification('Information updated.', 'success');
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -156,7 +179,7 @@ const DynamicAnimalEditPage = () => {
                             alt={`Picture of the author`}
                         />)}
                 </div>
-                <div className="card card-compact bg-base-200 shadow-xl z-10">
+                <div className="card card-compact bg-base-200 shadow-xl">
                     <div className="card-body">
                         <h2 className="card-title">Base information</h2>
                         <div className='grid md:grid-cols-2 gap-2'>
@@ -202,6 +225,12 @@ const DynamicAnimalEditPage = () => {
                         </div>
                     </div>
                 </div>
+
+                {/*<div className="card card-compact bg-base-200 shadow-xl mt-8">
+                    <div className="card-body">
+                        <h2 className="card-title">Feeding information</h2>
+                    </div>
+                                    </div>*/}
             </div>
         </>
     )
