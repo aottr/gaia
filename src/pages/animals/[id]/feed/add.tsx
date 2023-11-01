@@ -5,7 +5,7 @@ import getConfig from 'next/config';
 import PocketBase, { Record } from 'pocketbase';
 import Link from 'next/link';
 import Datepicker from '@/components/Datepicker';
-import { updateFeedingNotification } from '@/helpers/feeding';
+import { feedAnimal } from '@/helpers/feeding';
 import Breadcrumbs from '@/components/Breadcrumbs';
 
 const DynamicAnimalAddWeight = () => {
@@ -63,18 +63,8 @@ const DynamicAnimalAddWeight = () => {
             }
 
             setError('');
-
-            const pb = new PocketBase(publicRuntimeConfig.pocketbase);
-            const res = await pb.collection('feeding').create({
-                animal: animal?.id,
-                food: !refused ? feeder : null,
-                amount: !refused ? amount : '0',
-                date,
-                refused
-            });
-
-            if (res) {
-                updateFeedingNotification(animal, res);
+            const feeding = await feedAnimal(animal, feeders.find((f) => f.id !== feeder) || null, Number(amount), date);
+            if (feeding) {
                 router.push(`/animals/${animal?.id}`);
             }
 

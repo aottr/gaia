@@ -26,7 +26,7 @@ const AnimalsAddPage = () => {
     const STEPS = [
         { label: 'Basics', step: 1 },
         { label: 'Select Morphs', step: 2 },
-        { label: 'Feeding Info', step: 3 },
+        { label: 'Feeding', step: 3 },
         //{ label: 'Breeder Info', step: 4 },
         { label: 'Finish', step: 4 },
     ];
@@ -47,7 +47,6 @@ const AnimalsAddPage = () => {
 
     const [feeder, setFeeder] = useState<SelectValue | undefined>(undefined);
     const [feedingAmount, setFeedingAmount] = useState<number | undefined>(1);
-    const [feedingInterval, setFeedingInterval] = useState<number | undefined>(7);
 
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -60,7 +59,6 @@ const AnimalsAddPage = () => {
     const [readyFinish, setReadyFinish] = useState(false);
 
     const [autoFeedSetup, setAutoFeedSetup] = useState(false);
-    const [feedNotificationSetup, setFeedNotificationSetup] = useState(false);
 
     useEffect(() => {
         const pb = new PocketBase(publicRuntimeConfig.pocketbase);
@@ -158,13 +156,6 @@ const AnimalsAddPage = () => {
                 morph: morphs && morphs.length > 0 ? morphs.map((item) => item.value) : null,
             });
 
-            if (feedNotificationSetup && feedingInterval) {
-                await pb.collection('feeding_notification').create({
-                    animal: res.id,
-                    day_interval: feedingInterval,
-                });
-            }
-
             setStep([...STEPS].reverse()[0].step);
             addNotification('Animal has been created.', 'success');
             router.push(`/animals/${res.id}`);
@@ -256,23 +247,6 @@ const AnimalsAddPage = () => {
                                 )
                             }
 
-                            <div className="form-control">
-                                <label className="label cursor-pointer">
-                                    <span className="label-text">
-                                        Set up Feeding Notification
-                                        <IconBell size={24} className="inline text-primary ml-2" />
-                                    </span>
-                                    <input type="checkbox" className="toggle toggle-lg toggle-primary" onChange={(e) => setFeedNotificationSetup(e.target.checked)} checked={feedNotificationSetup} />
-                                </label>
-                            </div>
-
-                            {
-                                feedNotificationSetup && (
-                                    <>
-                                        <NumberField label='Feeding interval in days' min={1} defaultValue={feedingInterval} placeholder="Feeding interval in days" onChange={setFeedingInterval} />
-                                    </>
-                                )
-                            }
                         </>
                     )}
                     {progressStep == 4 && (

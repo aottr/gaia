@@ -6,6 +6,7 @@ import PocketBase, { Record } from 'pocketbase';
 import Link from 'next/link';
 import getConfig from 'next/config';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import { weightAnimal } from '@/helpers/weighting';
 
 const DynamicAnimalAddWeight = () => {
 
@@ -34,7 +35,7 @@ const DynamicAnimalAddWeight = () => {
         }
     }, [router.isReady]);
 
-    const handleLogin = async (e: any) => {
+    const handleWeighting = async (e: any) => {
         e.preventDefault();
 
         try {
@@ -47,14 +48,8 @@ const DynamicAnimalAddWeight = () => {
 
             setError('');
 
-            const pb = new PocketBase(publicRuntimeConfig.pocketbase);
-            const res = await pb.collection('weight').create({
-                animal: animal?.id,
-                value: weight,
-                date: date,
-            })
-
-            if (res) {
+            const weighting = await weightAnimal(animal, Number(weight), null, date);
+            if (weighting) {
                 router.push(`/animals/${animal?.id}`);
             }
 
@@ -69,7 +64,7 @@ const DynamicAnimalAddWeight = () => {
         <>
             {animal && <Breadcrumbs dynamicEntityName={{ [animal.id]: animal.name || animal.code || 'Animal', 'add': 'Add Weighing' }} />}
             {animal && (
-                <form onSubmit={handleLogin}>
+                <form onSubmit={handleWeighting}>
                     <div className='flex flex-col justify-center items-center'>
                         {error && <div className="alert alert-error mb-8 max-w-xs">
                             <IconExclamationCircle size={24} className="inline" />
