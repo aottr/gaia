@@ -23,14 +23,6 @@ const DynamicAnimalIndex = () => {
     const [success, setSuccess] = useState('');
     const { publicRuntimeConfig } = getConfig();
 
-    const getFeedingNotification = (animal: Record): { interval: number, time: Date } => {
-        const feedingNotification = (animal?.expand['feeding_notification(animal)'] as unknown as Array<{ day_interval: number, notification_time: string }>)[0];
-        return {
-            interval: feedingNotification.day_interval,
-            time: new Date()
-        }
-    }
-
     const getRackAssignment = (animal: Record): { id: string, position: number, name: string } | null => {
         if (!animal?.expand['rack_assignment(animal)'] || !(animal.expand['rack_assignment(animal)'] as Array<Record>)[0].expand.rack) {
             return null;
@@ -58,7 +50,7 @@ const DynamicAnimalIndex = () => {
         }
         const fetchAnimal = async () => {
             try {
-                const res = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species.classification,weight(animal),feeding(animal),feeding_notification(animal),default_food_feeder,rack_assignment(animal).rack' });
+                const res = await pb.collection('animal').getOne(`${router.query.id}`, { expand: 'species.classification,weight(animal),feeding(animal),default_food_feeder,rack_assignment(animal).rack' });
                 console.log(res);
                 setAnimal(res);
             } catch (err) {
@@ -135,25 +127,7 @@ const DynamicAnimalIndex = () => {
                         <div>
                             <h3 className="card-subtitle text-lg mb-2 text-primary">
                                 Feeding notification <IconBell size={20} className='inline' />
-                                {animal.expand['feeding_notification(animal)'] ? (
-                                    <div className='ml-2 badge badge-success'>{getFeedingNotification(animal).interval} days</div>
-                                ) : (
-                                    <div className='ml-2 badge badge-error'>Not configured</div>
-                                )}
                             </h3>
-                            {(animal && animal.expand['feeding_notification(animal)']) && (
-                                <>
-                                    <div className='mb-6'>
-                                        Next feeding
-                                        {!animal.expand['feeding(animal)'] || (animal.expand['feeding(animal)'] &&
-                                            getLastFeeding(animal) && isPast(addDays(new Date(getLastFeeding(animal)?.date), getFeedingNotification(animal).interval))) ? (
-                                            <div className='ml-2 badge badge-warning'>Today</div>
-                                        ) : (
-                                            <> in {differenceInDays(addDays(new Date(new Date(getLastFeeding(animal)?.date).toDateString()), getFeedingNotification(animal).interval), new Date(new Date().toDateString()))} days</>
-                                        )}
-                                    </div>
-                                </>
-                            )}
                             <h3 className="card-subtitle text-lg my-2 text-primary">Auto Feeding <IconSettingsAutomation size={20} className='inline' />
                                 {(!animal?.default_food_feeder || !animal?.default_food_amount) && (<div className='ml-2 badge badge-error'>Not configured</div>)}
                             </h3>
