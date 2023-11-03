@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PocketBase, { Record } from 'pocketbase';
 import { useRouter } from 'next/router';
 import { useQRCode } from 'next-qrcode';
-import { IconBug, IconScaleOutline, IconExclamationCircle, IconCircleCheck, IconBell, IconChartHistogram, IconSettingsAutomation } from '@tabler/icons-react';
+import { IconBug, IconScaleOutline, IconExclamationCircle, IconCircleCheck, IconBell, IconClipboardList, IconChartHistogram, IconSettingsAutomation } from '@tabler/icons-react';
 import WeightDiagram from '@/components/animal/charts/WeightDiagram';
 import Link from 'next/link';
 import getConfig from 'next/config';
@@ -11,6 +11,7 @@ import { autoFeeding } from '@/helpers/feeding';
 
 import { isPast, addDays, differenceInDays } from 'date-fns';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import ReminderTable from '@/components/animal/ReminderTable';
 
 const DynamicAnimalIndex = () => {
 
@@ -123,11 +124,13 @@ const DynamicAnimalIndex = () => {
 
                 <div className="card card-compact w-full bg-base-200 shadow-xl my-4">
                     <div className="card-body">
-                        <h2 className="card-title text-2xl font-normal">Feeding</h2>
+                        <h2 className="card-title text-2xl font-normal">
+                            <span className='rounded-full bg-base-100 p-2'>
+                                <IconBug size={20} className='text-primary' />
+                            </span>
+                            Feeding
+                        </h2>
                         <div>
-                            <h3 className="card-subtitle text-lg mb-2 text-primary">
-                                Feeding notification <IconBell size={20} className='inline' />
-                            </h3>
                             <h3 className="card-subtitle text-lg my-2 text-primary">Auto Feeding <IconSettingsAutomation size={20} className='inline' />
                                 {(!animal?.default_food_feeder || !animal?.default_food_amount) && (<div className='ml-2 badge badge-error'>Not configured</div>)}
                             </h3>
@@ -154,7 +157,12 @@ const DynamicAnimalIndex = () => {
 
                 <div className="card card-compact w-full bg-base-200 shadow-xl my-4">
                     <div className="card-body">
-                        <h2 className="card-title text-2xl font-normal">Weight</h2>
+                        <h2 className="card-title text-2xl font-normal">
+                            <span className='rounded-full bg-base-100 p-2'>
+                                <IconScaleOutline size={20} className='text-primary' />
+                            </span>
+                            Weight
+                        </h2>
                         <div>
                             <h3 className="card-subtitle text-lg my-2 text-primary">Weight history <IconChartHistogram size={20} className='inline' /></h3>
                             {(animal && animal.expand['weight(animal)']) && (animal.expand['weight(animal)']).length >= HISTORY_MINIMUM && (
@@ -166,6 +174,34 @@ const DynamicAnimalIndex = () => {
                             {(animal && (!animal.expand['weight(animal)']) || (animal.expand['weight(animal)']).length < HISTORY_MINIMUM) && (
                                 <div>History will be generated after a minimum of <div className="badge badge-primary badge-outline">{HISTORY_MINIMUM}</div> weightings.</div>
                             )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="card card-compact w-full bg-base-200 shadow-xl my-4">
+                    <div className="card-body">
+                        <h2 className="card-title text-2xl font-normal">
+                            <span className='rounded-full bg-base-100 p-2'>
+                                <IconBell size={20} className='text-primary' />
+                            </span>
+                            Reminders
+                        </h2>
+                        <div>
+                            <ReminderTable animal={animal} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="card card-compact w-full bg-base-200 shadow-xl my-4">
+                    <div className="card-body">
+                        <h2 className="card-title text-2xl font-normal">
+                            <span className='rounded-full bg-base-100 p-2'>
+                                <IconClipboardList size={20} className='text-primary' />
+                            </span>
+                            Tasks
+                        </h2>
+                        <div>
+
                         </div>
                     </div>
                 </div>
