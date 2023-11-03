@@ -67,7 +67,7 @@ const ReminderTable = ({ animal }: ReminderTableProps) => {
                         <th><span className='btn btn-ghost btn-sm'>{reminderIcon(reminder.expand.type)} {reminder.expand.type.name}</span></th>
                         <td>every
                             {reminder.weekday.length > 0
-                                ? reminder.weekday.map((day: string) => (<span className='badge badge-sm badge-primary mx-1'>{day}</span>))
+                                ? reminder.weekday.map((day: string) => (<span key={`${reminder.id}-${day}`} className='badge badge-sm badge-primary mx-1'>{day}</span>))
                                 : <span className='badge badge-sm badge-primary ml-1'>{reminder.interval} days</span>}
                         </td>
                         <td>{format(new Date(reminder.date), 'eee. dd.MM.yyyy')}</td>
