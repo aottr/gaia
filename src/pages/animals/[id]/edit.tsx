@@ -9,7 +9,8 @@ import MultiSelectField from '@/components/inputs/MultiSelectField';
 import DatePickerComponent from '@/components/Datepicker';
 import useNotification from '@/hooks/useNotification';
 import { generateShorkBytesIdentityCode } from '@/helpers/animalCode';
-import { IconReload, IconArrowBackUp } from '@tabler/icons-react';
+import { IconReload, IconArrowBackUp, IconWorldOff, IconBug, IconCloudRain, IconPoo, IconScaleOutline } from '@tabler/icons-react';
+import ReminderSetup from '@/components/animal/ReminderSetup';
 
 type AnimalRecord = Record & {};
 type SpeciesRecord = Record & { expand: { classification: Record } };
@@ -179,7 +180,7 @@ const DynamicAnimalEditPage = () => {
                             alt={`Picture of the author`}
                         />)}
                 </div>
-                <div className="card card-compact bg-base-200 shadow-xl">
+                <div className="card card-compact bg-base-200 shadow-xl mb-4">
                     <div className="card-body">
                         <h2 className="card-title">Base information</h2>
                         <div className='grid md:grid-cols-2 gap-2'>
@@ -231,6 +232,12 @@ const DynamicAnimalEditPage = () => {
                         <h2 className="card-title">Feeding information</h2>
                     </div>
                                     </div>*/}
+                <div className="card card-compact bg-base-200 shadow-xl">
+                    <div className="card-body">
+                        <h2 id='reminders' className="card-title">Reminders</h2>
+                        <ReminderSetup animal={animal} />
+                    </div>
+                </div>
             </div>
         </>
     )

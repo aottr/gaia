@@ -101,6 +101,7 @@ const TodaysFeedingsComponent = () => {
                 </span>}
             </h1>
             {isLoading && <div className='text-center py-10'><span className="loading loading-ring text-primary loading-lg"></span></div>}
+            {error || (!isLoading && data?.length === 0) && <div className='text-center py-10'>No feedings today.</div>}
             {data && data.map((notification) => (
                 <div key={notification.id} className='border-b border-base-100 last:border-b-0 flex items-center'>
                     <div className='py-2 px-4'>

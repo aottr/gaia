@@ -1,9 +1,7 @@
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { IconToolsKitchen2, IconX } from '@tabler/icons-react';
 import getConfig from 'next/config';
 import PocketBase, { Record } from 'pocketbase';
-import { isPast, addDays } from 'date-fns';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import TodaysFeedingsComponent from '@/components/dashboard/TodaysFeedings';
 
