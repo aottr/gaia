@@ -13,6 +13,7 @@ import MultiSelectField from '@/components/inputs/MultiSelectField';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { generateShorkBytesIdentityCode } from '@/helpers/animalCode';
 import useNotification from '@/hooks/useNotification';
+import ReminderSetup from '@/components/animal/ReminderSetup';
 
 type SpeciesRecord = Record & { expand: { classification: Record } };
 
@@ -28,7 +29,8 @@ const AnimalsAddPage = () => {
         { label: 'Select Morphs', step: 2 },
         { label: 'Feeding', step: 3 },
         //{ label: 'Breeder Info', step: 4 },
-        { label: 'Finish', step: 4 },
+        { label: 'Finish', step: 4, finish: true },
+        { label: 'Reminders', step: 5, postFinish: true },
     ];
 
     const SEX = [
@@ -59,6 +61,7 @@ const AnimalsAddPage = () => {
     const [readyFinish, setReadyFinish] = useState(false);
 
     const [autoFeedSetup, setAutoFeedSetup] = useState(false);
+    const [animal, setAnimal] = useState<Record | undefined>(undefined);
 
     useEffect(() => {
         const pb = new PocketBase(publicRuntimeConfig.pocketbase);
@@ -124,8 +127,29 @@ const AnimalsAddPage = () => {
         addNotification('Animal code generated.', 'success');
     }
 
+    const resetAnimal = () => {
+        setAnimal(undefined);
+        setName(null);
+        setSpecies(undefined);
+        setSex('u');
+        setBirthdate(new Date());
+        setCode(null);
+        setMorphs(undefined);
+        setFeeder(undefined);
+        setFeedingAmount(undefined);
+        setAutoFeedSetup(false);
+        setAnimal(undefined);
+        setError(null);
+        setSuccess(null);
+        setStep(STEPS[0].step);
+    };
+
     const handleAnimalCreation = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (animal) {
+            addNotification('Animal already exists.', 'info');
+            return;
+        }
         if (!species) {
             addNotification('Please set a species for the new animal.', 'error');
             setStep(STEPS[0].step)
@@ -156,9 +180,9 @@ const AnimalsAddPage = () => {
                 morph: morphs && morphs.length > 0 ? morphs.map((item) => item.value) : null,
             });
 
-            setStep([...STEPS].reverse()[0].step);
+            setStep(STEPS.find((s) => s.finish)?.step || 1);
             addNotification('Animal has been created.', 'success');
-            router.push(`/animals/${res.id}`);
+            setAnimal(res);
         } catch (err) {
             console.log(err);
         }
@@ -174,97 +198,103 @@ const AnimalsAddPage = () => {
                 </div>}
                 <h1 className='text-3xl'>Add Animal</h1>
                 <ul className="steps steps-vertical lg:steps-horizontal w-full my-10">
-                    {STEPS.map(({ step, label }) => (
+                    {STEPS.map(({ step, label, finish, postFinish }) => (
                         <li key={step} className={`step cursor-pointer ${progressStep >= step ? 'step-primary' : ''}`} onClick={() => {
 
                             // avoid clicking finish step
-                            if (step === STEPS.length) return;
+                            if (step === STEPS.length || finish || (postFinish && !animal)) return;
                             setStep(step)
                         }
                         }>{label}</li>
                     ))}
                 </ul>
 
-                <div className='w-full max-w-xl mx-auto'>
-                    {progressStep == 1 && (
-                        <>
-                            <h2 className='text-2xl text-center mb-8'>{STEPS[progressStep - 1].label}</h2>
 
-                            <TextField label='Name' placeholder="Name" onChange={setName} />
-                            <Select label='Species' onChange={setSpecies} options={speciesList} defaultValue={species} />
-                            <div className="form-control w-full p-2">
-                                <label className="label">
-                                    <span className="label-text">Sex</span>
-                                </label>
-                                <div className="join">
-                                    {SEX.map((sexOption) => (
-                                        <input key={sexOption.value} className="join-item btn" type="radio" name="options" aria-label={sexOption.label} value={sexOption.value} checked={sexOption.value === sex} onChange={(e) => setSex(sexOption.value)} />
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="form-control w-full p-2">
-                                <label className="label">
-                                    <span className="label-text">Date of Birth</span>
-                                </label>
-                                <DatePickerComponent onChange={date => setBirthdate(date)} />
-                            </div>
-                            <div className="form-control w-full p-2">
-                                <label className="label">
-                                    <span className="label-text" aria-label="Code">Code</span>
-                                </label>
-                                <div className="join">
-                                    <input type="text" onChange={(e) => setCode(e.target.value)} className="input input-bordered w-full join-item" value={code || ''} />
-                                    <button className="btn join-item btn-primary btn-square" onClick={handleSBCodeGeneration}><IconReload size={24} /></button>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    {progressStep == 2 && (
-                        <>
-                            <h2 className='text-2xl text-center mb-8'>{STEPS[progressStep - 1].label}</h2>
-                            <MultiSelectField label='Morphs' onChange={setMorphs} options={morphList} defaultValue={morphs} />
-                        </>
-                    )}
-                    {progressStep == 3 && (
-                        <>
-                            <h2 className='text-2xl text-center mb-8'>{STEPS[progressStep - 1].label}</h2>
+                {progressStep == 1 && (
+                    <div className='w-full max-w-xl mx-auto'>
+                        <h2 className='text-2xl text-center mb-8'>{STEPS[progressStep - 1].label}</h2>
 
-                            <div className="form-control">
-                                <label className="label cursor-pointer">
-                                    <span className="label-text">
-                                        Set up Auto Feeding
-                                        <IconSettingsAutomation size={24} className="inline text-primary ml-2" />
-                                    </span>
-                                    <input type="checkbox" className="toggle toggle-lg toggle-primary" onChange={(e) => setAutoFeedSetup(e.target.checked)} checked={autoFeedSetup} />
-                                </label>
+                        <TextField label='Name' placeholder="Name" onChange={setName} />
+                        <Select label='Species' onChange={setSpecies} options={speciesList} defaultValue={species} />
+                        <div className="form-control w-full p-2">
+                            <label className="label">
+                                <span className="label-text">Sex</span>
+                            </label>
+                            <div className="join">
+                                {SEX.map((sexOption) => (
+                                    <input key={sexOption.value} className="join-item btn" type="radio" name="options" aria-label={sexOption.label} value={sexOption.value} checked={sexOption.value === sex} onChange={(e) => setSex(sexOption.value)} />
+                                ))}
                             </div>
-                            {
-                                autoFeedSetup && (
-                                    <>
-                                        <Select label='Feeder animal' onChange={setFeeder} options={feedersList} defaultValue={feeder} />
-                                        <NumberField label='Feeding Amount' min={1} defaultValue={feedingAmount} placeholder="Feeding Amount" onChange={setFeedingAmount} />
-                                    </>
-                                )
-                            }
-
-                        </>
-                    )}
-                    {progressStep == 4 && (
-                        <>
-                            <h2 className='text-2xl'>{STEPS[progressStep - 1].label}</h2>
-                            {success}
-                        </>
-                    )}
-
-                </div>
-                {!success && (
-                    <div className='mt-12 flex flex-row w-full lg:max-w-2xl xl:max-w-4xl 2xl:max-w-5xl mx-auto'>
-                        <button className={`btn btn-primary ${progressStep === 1 ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep - 1)}>Back</button>
-                        <div className='flex-grow'></div>
-                        <button className={`ml-2 btn btn-primary ${progressStep === STEPS.length - 1 ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep + 1)}>Next</button>
-                        <button className={`ml-2 btn btn-primary ${!readyFinish && 'btn-disabled'}`} onClick={handleAnimalCreation}>Finish</button>
+                        </div>
+                        <div className="form-control w-full p-2">
+                            <label className="label">
+                                <span className="label-text">Date of Birth</span>
+                            </label>
+                            <DatePickerComponent onChange={date => setBirthdate(date)} />
+                        </div>
+                        <div className="form-control w-full p-2">
+                            <label className="label">
+                                <span className="label-text" aria-label="Code">Code</span>
+                            </label>
+                            <div className="join">
+                                <input type="text" onChange={(e) => setCode(e.target.value)} className="input input-bordered w-full join-item" value={code || ''} />
+                                <button className="btn join-item btn-primary btn-square" onClick={handleSBCodeGeneration}><IconReload size={24} /></button>
+                            </div>
+                        </div>
                     </div>
                 )}
+                {progressStep == 2 && (
+                    <div className='w-full max-w-xl mx-auto'>
+                        <h2 className='text-2xl text-center mb-8'>{STEPS[progressStep - 1].label}</h2>
+                        <MultiSelectField label='Morphs' onChange={setMorphs} options={morphList} defaultValue={morphs} />
+                    </div>
+                )}
+                {progressStep == 3 && (
+                    <div className='w-full max-w-xl mx-auto'>
+                        <h2 className='text-2xl text-center mb-8'>{STEPS[progressStep - 1].label}</h2>
+
+                        <div className="form-control">
+                            <label className="label cursor-pointer">
+                                <span className="label-text">
+                                    Set up Auto Feeding
+                                    <IconSettingsAutomation size={24} className="inline text-primary ml-2" />
+                                </span>
+                                <input type="checkbox" className="toggle toggle-lg toggle-primary" onChange={(e) => setAutoFeedSetup(e.target.checked)} checked={autoFeedSetup} />
+                            </label>
+                        </div>
+                        {
+                            autoFeedSetup && (
+                                <>
+                                    <Select label='Feeder animal' onChange={setFeeder} options={feedersList} defaultValue={feeder} />
+                                    <NumberField label='Feeding Amount' min={1} defaultValue={feedingAmount} placeholder="Feeding Amount" onChange={setFeedingAmount} />
+                                </>
+                            )
+                        }
+
+                    </div>
+                )}
+                {progressStep == 4 && (
+                    <div className='w-full max-w-xl mx-auto'>
+                        <h2 className='text-2xl'>{STEPS[progressStep - 1].label}</h2>
+                        {success}
+                    </div>
+                )}
+
+                {progressStep == 5 && (
+                    <div className="card card-compact bg-base-200 shadow-xl max-w-4xl mx-auto">
+                        <div className="card-body">
+                            {animal && <ReminderSetup animal={animal} />}
+                        </div>
+                    </div>
+                )}
+
+            </div>
+            <div className='mt-12 flex flex-row w-full lg:max-w-2xl xl:max-w-4xl 2xl:max-w-5xl mx-auto'>
+                <button className={`btn btn-primary ${progressStep === 1 ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep - 1)}>Back</button>
+                <div className='flex-grow'></div>
+                <button className={`ml-2 btn btn-primary ${progressStep >= (STEPS.find((s) => s.finish)?.step || STEPS.length) - 1 && !animal || progressStep == STEPS.length ? 'btn-disabled' : ''}`} onClick={() => setStep(progressStep + 1)}>Next</button>
+                <button className={`ml-2 btn btn-primary ${(!readyFinish || animal) && 'btn-disabled'}`} onClick={handleAnimalCreation}>Finish</button>
+                {animal && <button className={`ml-2 btn btn-primary`} onClick={() => resetAnimal()}>Create another</button>}
             </div>
         </>
     );
