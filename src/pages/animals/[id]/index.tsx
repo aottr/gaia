@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PocketBase, { Record } from 'pocketbase';
 import { useRouter } from 'next/router';
 import { useQRCode } from 'next-qrcode';
-import { IconBug, IconScaleOutline, IconExclamationCircle, IconCircleCheck, IconBell, IconClipboardList, IconChartHistogram, IconSettingsAutomation } from '@tabler/icons-react';
+import { IconBug, IconScaleOutline, IconExclamationCircle, IconCircleCheck, IconDots, IconBell, IconAdjustmentsAlt, IconClipboardList, IconChartHistogram, IconSettingsAutomation, IconPoo } from '@tabler/icons-react';
 import WeightDiagram from '@/components/animal/charts/WeightDiagram';
 import Link from 'next/link';
 import getConfig from 'next/config';
@@ -92,7 +92,6 @@ const DynamicAnimalIndex = () => {
 
                 <h1 className='text-3xl'>
                     {animal.name}
-                    <span className='btn btn-xs' onClick={() => router.push(`/animals/${animal.id}/edit`)}>Edit</span>
                 </h1>
                 <h2 className='text-xs text-secondary'>Code: {animal.code ? <a href={`/code/${animal.code}`} target='_blank'>{animal.code}</a> : (
                     <div className='ml-2 badge badge-error badge-sm'>Not configured</div>
@@ -107,17 +106,26 @@ const DynamicAnimalIndex = () => {
                             src={`${publicRuntimeConfig.pocketbase}/api/files/animal/${animal.id}/${animal.thumbnail}?thumb=300x300`}
                             alt="Picture of the author"
                         />) : <div></div>}
-                    <div className='order-first md:order-none flex flex-row w-full justify-center mt-6 md:mt-0 md:w-auto md:justify-end'>
-                        <div className="join">
-                            <button className="btn join-item btn-primary" onClick={tryAutoFeed}>Auto Feed</button>
-                            <Link className="btn join-item btn-primary btn-outline" href={`/animals/${animal.id}/feed/add`}>
-                                <IconBug size={24} />
-                                Feed
-                            </Link>
-                            <Link className="btn join-item btn-outline btn-secondary" href={`/animals/${animal.id}/weight/add`}>
-                                <IconScaleOutline size={24} />
-                                Weight
-                            </Link>
+                    <div className='order-first md:order-none flex flex-row w-full justify-center mt-6 md:mt-0 md:w-auto md:justify-end items-start'>
+                        <div className='flex items-center'>
+                            <div className='join'>
+                                <div className="tooltip tooltip-bottom" data-tip="Feed Animal">
+                                    <span className='btn btn-outline btn-primary join-item' onClick={tryAutoFeed}><IconBug /></span>
+                                </div>
+                                <div className="tooltip tooltip-bottom" data-tip="Weight Animal">
+                                    <Link className='btn btn-outline btn-primary join-item' href={`/animals/${animal.id}/weight/add`}><IconScaleOutline size={24} /></Link>
+                                </div>
+                                <div className="tooltip tooltip-bottom" data-tip="Clean Animal">
+                                    <span className='btn btn-outline btn-primary join-item'><IconPoo size={24} /></span>
+                                </div>
+                            </div>
+                            <details className="dropdown dropdown-end">
+                                <summary className="m-1 btn btn-secondary"><IconDots size={24} /></summary>
+                                <ul className="p-2 shadow menu menu-lg dropdown-content z-[1] bg-base-200 rounded-box w-52">
+                                    <li><Link className='' href={`/animals/${animal.id}/feed/add`}><IconBug size={24} /> Manual Feed</Link></li>
+                                    <li><Link href={`/animals/${animal.id}/edit`}><IconAdjustmentsAlt size={24} />Edit Animal</Link></li>
+                                </ul>
+                            </details>
                         </div>
                     </div>
                 </div>
