@@ -3,7 +3,7 @@ import PocketBase, { Record } from 'pocketbase';
 import getConfig from 'next/config';
 import { addDays, startOfToday, startOfDay } from 'date-fns';
 
-const WEEK_DAYS: Weekday[] = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+export const WEEK_DAYS: Weekday[] = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 export type Weekday = "Su" | "Mo" | "Tu" | "We" | "Th" | "Fr" | "Sa";
 
 export const getNextDate = (weekdays: Weekday[], startDate: Date | null = null) => {

@@ -4,6 +4,7 @@ import PocketBase, { Record } from 'pocketbase';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import TodaysFeedingsComponent from '@/components/dashboard/TodaysFeedings';
+import WeekTasks from '@/components/dashboard/WeekTasks';
 
 const DashboardPage = () => {
 
@@ -39,6 +40,7 @@ const DashboardPage = () => {
 
                 </div>
                 <TodaysFeedingsComponent />
+                <div className='lg:col-span-2'><WeekTasks /></div>
             </div>
         </>
     )
